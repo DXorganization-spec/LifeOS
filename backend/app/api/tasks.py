@@ -11,6 +11,8 @@ from datetime import date, timedelta
 from app.services.achievements import unlock_achievement
 from app.models.activity import Activity
 from app.schemas.task import TaskCreate, TaskUpdate
+from app.models.activity import Activity
+from datetime import date
 
 router = APIRouter()
 
@@ -70,22 +72,15 @@ def complete_task(
         db.query(Task)
         .join(Goal)
         .join(Area)
-        .filter(
-            Task.id == task_id,
-            Area.user_id == current_user.id
-        )
+        .filter(Task.id == task_id, Area.user_id == current_user.id)
         .first()
     )
 
     if not task:
-        return {
-            "message": "Task not found"
-        }
+        return {"message": "Task not found"}
 
     if task.completed:
-        return {
-            "message": "Task already completed"
-        }
+        return {"message": "Task already completed"}
 
     task.completed = True
     db.flush()
@@ -118,9 +113,7 @@ def complete_task(
         )
 
     # Level
-    current_user.level = (
-        current_user.xp // 100
-    ) + 1
+    current_user.level = (current_user.xp // 100) + 1
 
     # Streak Logic
     today = date.today()
@@ -128,21 +121,14 @@ def complete_task(
     if current_user.last_activity_date is None:
         current_user.current_streak = 1
 
-    elif current_user.last_activity_date == (
-        today - timedelta(days=1)
-    ):
+    elif current_user.last_activity_date == (today - timedelta(days=1)):
         current_user.current_streak += 1
 
     elif current_user.last_activity_date != today:
         current_user.current_streak = 1
 
-    if (
-        current_user.current_streak >
-        current_user.longest_streak
-    ):
-        current_user.longest_streak = (
-            current_user.current_streak
-        )
+    if current_user.current_streak > current_user.longest_streak:
+        current_user.longest_streak = current_user.current_streak
 
     current_user.last_activity_date = today
 
@@ -166,10 +152,7 @@ def complete_task(
     # Activity Tracking
     activity = (
         db.query(Activity)
-        .filter(
-            Activity.user_id == current_user.id,
-            Activity.date == today
-        )
+        .filter(Activity.user_id == current_user.id, Activity.date == today)
         .first()
     )
 
@@ -186,35 +169,17 @@ def complete_task(
         db.add(activity)
 
     # Goal Crusher Achievement
-    total_tasks = (
-        db.query(Task)
-        .filter(
-            Task.goal_id == task.goal_id
-        )
-        .count()
-    )
+    total_tasks = db.query(Task).filter(Task.goal_id == task.goal_id).count()
 
     completed_tasks = (
         db.query(Task)
-        .filter(
-            Task.goal_id == task.goal_id,
-            Task.completed == True
-        )
+        .filter(Task.goal_id == task.goal_id, Task.completed == True)
         .count()
     )
 
+    print("Goal Crusher:", total_tasks, completed_tasks, task.goal_id)
 
-    print(
-    "Goal Crusher:",
-    total_tasks,
-    completed_tasks,
-    task.goal_id
-    )
-
-    if (
-        total_tasks > 0
-        and completed_tasks == total_tasks
-    ):
+    if total_tasks > 0 and completed_tasks == total_tasks:
         unlock_achievement(
             db,
             current_user,
@@ -231,6 +196,7 @@ def complete_task(
         "current_streak": current_user.current_streak,
         "longest_streak": current_user.longest_streak,
     }
+
 
 @router.put("/tasks/{task_id}")
 def update_task(
@@ -278,3 +244,54 @@ def delete_task(
     db.commit()
 
     return {"message": "Task deleted"}
+
+
+@router.put("/tasks/{task_id}/complete")
+def complete_task(
+    task_id: str,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+
+    task = (
+        db.query(Task)
+        .join(Goal)
+        .join(Area)
+        .filter(Task.id == task_id, Area.user_id == current_user.id)
+        .first()
+    )
+
+    if not task:
+        return {"message": "Task not found"}
+
+    if task.completed:
+        return {"message": "Already completed"}
+
+    task.completed = True
+
+    current_user.xp += 10
+
+    if current_user.xp >= current_user.level * 100:
+        current_user.level += 1
+
+    today = date.today()
+
+    activity = (
+        db.query(Activity)
+        .filter(Activity.user_id == current_user.id, Activity.date == today)
+        .first()
+    )
+
+    if activity:
+        activity.count += 1
+    else:
+        activity = Activity(user_id=current_user.id, date=today, count=1)
+        db.add(activity)
+
+    db.commit()
+
+    return {
+        "message": "Task completed",
+        "xp": current_user.xp,
+        "level": current_user.level,
+    }
