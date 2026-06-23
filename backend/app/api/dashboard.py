@@ -56,6 +56,14 @@ def dashboard(
         .count()
     )
 
+    progress_percentage = 0
+
+    if tasks_count > 0:
+        progress_percentage = round(
+            (completed_tasks / tasks_count) * 100,
+            2
+        )
+
     return {
         "xp": current_user.xp,
         "level": current_user.level,
@@ -64,5 +72,6 @@ def dashboard(
         "areas": areas_count,
         "goals": goals_count,
         "tasks": tasks_count,
-        "completed_tasks": completed_tasks
+        "completed_tasks": completed_tasks,
+        "progress_percentage": progress_percentage
     }
