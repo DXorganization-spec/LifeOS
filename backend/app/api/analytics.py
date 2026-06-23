@@ -7,6 +7,9 @@ from app.core.auth import get_current_user
 
 from app.models.user import User
 from app.models.activity import Activity
+from app.services.report_service import (
+    send_weekly_reports
+)
 
 router = APIRouter()
 
@@ -39,10 +42,16 @@ def weekly_analytics(
         tasks_completed * 10
     )
 
+    active_days = len(activities)
+
     return {
         "tasks_completed": tasks_completed,
         "xp_gained": xp_gained,
         "current_streak": current_user.current_streak,
+        "longest_streak": current_user.longest_streak,
+        "level": current_user.level,
+        "total_xp": current_user.xp,
+        "active_days": active_days,
         "productivity_score": productivity_score
     }
 
@@ -79,6 +88,8 @@ def monthly_analytics(
             best_day_count = activity.count
             best_day = activity.date
 
+    active_days = len(activities)
+
     productivity_score = min(
         100,
         tasks_completed * 3
@@ -88,7 +99,21 @@ def monthly_analytics(
         "tasks_completed": tasks_completed,
         "xp_gained": xp_gained,
         "current_streak": current_user.current_streak,
+        "longest_streak": current_user.longest_streak,
+        "level": current_user.level,
+        "total_xp": current_user.xp,
+        "active_days": active_days,
         "best_day": best_day,
         "best_day_tasks": best_day_count,
         "productivity_score": productivity_score
+    }
+@router.post("/test-weekly-report")
+def test_weekly_report(
+    db: Session = Depends(get_db)
+):
+
+    send_weekly_reports(db)
+
+    return {
+        "message": "Weekly reports sent"
     }
