@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -15,7 +16,7 @@ export default function AchievementsPage() {
     >([]);
 
     useEffect(() => {
-        fetchAchievements();
+        void fetchAchievements();
     }, []);
 
     const fetchAchievements = async () => {
@@ -24,54 +25,123 @@ export default function AchievementsPage() {
                 "/achievements"
             );
 
-            setAchievements(
-                response.data
-            );
+            setAchievements(response.data);
         } catch (error) {
             console.error(error);
         }
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Achievements</h1>
+        <div
+            style={{
+                padding: "30px",
+                maxWidth: "1100px",
+                margin: "0 auto",
+                color: "white",
+            }}
+        >
+            <h1
+                style={{
+                    fontSize: "40px",
+                    marginBottom: "10px",
+                }}
+            >
+                🏆 Achievements
+            </h1>
 
-            <hr />
+            <p
+                style={{
+                    color: "#9ca3af",
+                    marginBottom: "30px",
+                }}
+            >
+                Track your milestones and celebrate your progress.
+            </p>
+
+            <div
+                style={{
+                    background: "#111827",
+                    border: "1px solid #374151",
+                    borderRadius: "14px",
+                    padding: "20px",
+                    marginBottom: "30px",
+                }}
+            >
+                <h2>
+                    Total Unlocked: {achievements.length}
+                </h2>
+            </div>
 
             {achievements.length === 0 ? (
-                <p>
-                    No achievements unlocked
-                    yet.
-                </p>
+                <div
+                    style={{
+                        background: "#111827",
+                        border: "1px solid #374151",
+                        borderRadius: "14px",
+                        padding: "30px",
+                        textAlign: "center",
+                    }}
+                >
+                    <h2>🏆</h2>
+                    <p
+                        style={{
+                            color: "#9ca3af",
+                        }}
+                    >
+                        No achievements unlocked yet.
+                    </p>
+                </div>
             ) : (
-                achievements.map(
-                    (achievement) => (
-                        <div
-                            key={
-                                achievement.id
-                            }
-                            style={{
-                                marginBottom:
-                                    "20px",
-                            }}
-                        >
-                            <h3>
-                                🏆{" "}
-                                {
-                                    achievement.title
+                <div
+                    style={{
+                        display: "grid",
+                        gridTemplateColumns:
+                            "repeat(auto-fit, minmax(300px, 1fr))",
+                        gap: "20px",
+                    }}
+                >
+                    {achievements.map(
+                        (achievement) => (
+                            <div
+                                key={
+                                    achievement.id
                                 }
-                            </h3>
+                                style={{
+                                    background:
+                                        "#111827",
+                                    border:
+                                        "1px solid #374151",
+                                    borderRadius:
+                                        "14px",
+                                    padding:
+                                        "25px",
+                                }}
+                            >
+                                <h2
+                                    style={{
+                                        marginTop: 0,
+                                    }}
+                                >
+                                    🏆{" "}
+                                    {
+                                        achievement.title
+                                    }
+                                </h2>
 
-                            <p>
-                                {
-                                    achievement.description
-                                }
-                            </p>
-
-                            <hr />
-                        </div>
-                    )
-                )
+                                <p
+                                    style={{
+                                        color:
+                                            "#d1d5db",
+                                    }}
+                                >
+                                    {
+                                        achievement.description
+                                    }
+                                </p>
+                            </div>
+                        )
+                    )}
+                </div>
             )}
         </div>
     );

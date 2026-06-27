@@ -1,7 +1,9 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import XPChart from "@/components/XPChart";
 
 export default function DashboardPage() {
     const [data, setData] = useState<any>(null);
@@ -34,6 +36,7 @@ export default function DashboardPage() {
     }
 
     const nextLevelXP = data.level * 100;
+
     const progress = Math.min(
         (data.xp / nextLevelXP) * 100,
         100
@@ -46,6 +49,8 @@ export default function DashboardPage() {
                 color: "white",
                 maxWidth: "1100px",
                 margin: "0 auto",
+                minHeight: "100vh",
+                background: "#030712",
             }}
         >
             <h1
@@ -79,7 +84,12 @@ export default function DashboardPage() {
             >
                 <h2>⭐ Level {data.level}</h2>
 
-                <p>
+                <p
+                    style={{
+                        color: "#9ca3af",
+                        marginBottom: "15px",
+                    }}
+                >
                     XP: {data.xp} / {nextLevelXP}
                 </p>
 
@@ -97,6 +107,7 @@ export default function DashboardPage() {
                             width: `${progress}%`,
                             height: "100%",
                             background: "#22c55e",
+                            transition: "width 0.5s ease",
                         }}
                     />
                 </div>
@@ -108,7 +119,7 @@ export default function DashboardPage() {
                 style={{
                     display: "grid",
                     gridTemplateColumns:
-                        "repeat(auto-fit, minmax(220px,1fr))",
+                        "repeat(auto-fit, minmax(220px, 1fr))",
                     gap: "20px",
                 }}
             >
@@ -122,6 +133,12 @@ export default function DashboardPage() {
                     emoji="🏆"
                     title="Longest Streak"
                     value={`${data.longest_streak} Days`}
+                />
+
+                <StatCard
+                    emoji="📈"
+                    title="Today's Progress"
+                    value={`${data.progress_percentage}%`}
                 />
 
                 <StatCard
@@ -149,6 +166,21 @@ export default function DashboardPage() {
                 />
             </div>
 
+
+            <div
+                style={{
+                    marginTop: "35px",
+                    background: "#111827",
+                    padding: "25px",
+                    borderRadius: "14px",
+                    border: "1px solid #374151",
+                }}
+            >
+                <h2>📈 Weekly XP Progress</h2>
+
+                <XPChart />
+            </div>
+
             {/* MOTIVATION */}
 
             <div
@@ -171,12 +203,12 @@ export default function DashboardPage() {
                     {data.progress_percentage >= 100
                         ? "🏆 Outstanding! You completed everything today."
                         : data.progress_percentage >= 75
-                        ? "🔥 You're close to finishing. Keep going!"
-                        : data.progress_percentage >= 50
-                        ? "💪 You're making solid progress."
-                        : data.progress_percentage >= 25
-                        ? "🚀 Good start. Stay consistent."
-                        : "🌱 Small wins every day build extraordinary results."}
+                            ? "🔥 You're close to finishing. Keep going!"
+                            : data.progress_percentage >= 50
+                                ? "💪 You're making solid progress."
+                                : data.progress_percentage >= 25
+                                    ? "🚀 Good start. Stay consistent."
+                                    : "🌱 Small wins every day build extraordinary results."}
                 </p>
             </div>
         </div>
@@ -199,6 +231,7 @@ function StatCard({
                 padding: "20px",
                 borderRadius: "14px",
                 border: "1px solid #374151",
+                transition: "0.2s",
             }}
         >
             <h3
@@ -221,3 +254,4 @@ function StatCard({
         </div>
     );
 }
+

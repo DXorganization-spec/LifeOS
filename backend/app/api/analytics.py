@@ -1,3 +1,4 @@
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from datetime import date, timedelta
@@ -8,16 +9,20 @@ from app.core.auth import get_current_user
 from app.models.user import User
 from app.models.activity import Activity
 from app.services.report_service import (
-    send_weekly_reports
+    send_weekly_reports,
 )
 
 router = APIRouter()
 
 
-@router.get("/analytics/weekly")
-def weekly_analytics(
+# ==========================================
+# Weekly Summary Analytics
+# ==========================================
+
+@router.get("/analytics/weekly-summary")
+def weekly_summary(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     seven_days_ago = date.today() - timedelta(days=6)
 
@@ -25,7 +30,7 @@ def weekly_analytics(
         db.query(Activity)
         .filter(
             Activity.user_id == current_user.id,
-            Activity.date >= seven_days_ago
+            Activity.date >= seven_days_ago,
         )
         .all()
     )
@@ -39,7 +44,7 @@ def weekly_analytics(
 
     productivity_score = min(
         100,
-        tasks_completed * 10
+        tasks_completed * 10,
     )
 
     active_days = len(activities)
@@ -52,13 +57,18 @@ def weekly_analytics(
         "level": current_user.level,
         "total_xp": current_user.xp,
         "active_days": active_days,
-        "productivity_score": productivity_score
+        "productivity_score": productivity_score,
     }
+
+
+# ==========================================
+# Monthly Analytics
+# ==========================================
 
 @router.get("/analytics/monthly")
 def monthly_analytics(
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
     thirty_days_ago = date.today() - timedelta(days=29)
 
@@ -66,7 +76,7 @@ def monthly_analytics(
         db.query(Activity)
         .filter(
             Activity.user_id == current_user.id,
-            Activity.date >= thirty_days_ago
+            Activity.date >= thirty_days_ago,
         )
         .all()
     )
@@ -82,9 +92,7 @@ def monthly_analytics(
     best_day_count = 0
 
     for activity in activities:
-
         if activity.count > best_day_count:
-
             best_day_count = activity.count
             best_day = activity.date
 
@@ -92,7 +100,7 @@ def monthly_analytics(
 
     productivity_score = min(
         100,
-        tasks_completed * 3
+        tasks_completed * 3,
     )
 
     return {
@@ -105,15 +113,51 @@ def monthly_analytics(
         "active_days": active_days,
         "best_day": best_day,
         "best_day_tasks": best_day_count,
-        "productivity_score": productivity_score
+        "productivity_score": productivity_score,
     }
+
+
+# ==========================================
+# Weekly Chart Data
+# ==========================================
+
+@router.get("/analytics/weekly")
+def weekly_chart(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    seven_days_ago = date.today() - timedelta(days=6)
+
+    activities = (
+        db.query(Activity)
+        .filter(
+            Activity.user_id == current_user.id,
+            Activity.date >= seven_days_ago,
+        )
+        .order_by(Activity.date)
+        .all()
+    )
+
+    return [
+        {
+            "date": activity.date.strftime("%a"),
+            "count": activity.count,
+        }
+        for activity in activities
+    ]
+
+
+# ==========================================
+# Test Weekly Report
+# ==========================================
+
 @router.post("/test-weekly-report")
 def test_weekly_report(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
 ):
-
     send_weekly_reports(db)
 
     return {
         "message": "Weekly reports sent"
     }
+

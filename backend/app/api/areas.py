@@ -1,4 +1,3 @@
-
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 from app.models.goal import Goal
@@ -9,107 +8,78 @@ from app.schemas.area import AreaCreate
 from app.core.auth import get_current_user
 from app.models.user import User
 from app.models.task import Task
-from app.schemas.area import (
-    AreaCreate,
-    AreaUpdate
-)
+from app.schemas.area import AreaCreate, AreaUpdate
 
 router = APIRouter()
+
 
 @router.post("/areas")
 def create_area(
     area: AreaCreate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
 
-    new_area = Area(
-        name=area.name,
-        user_id=current_user.id
-    )
+    new_area = Area(name=area.name, user_id=current_user.id)
 
     db.add(new_area)
     db.commit()
     db.refresh(new_area)
 
-    return {
-        "id": str(new_area.id),
-        "name": new_area.name
-    }
+    return {"id": str(new_area.id), "name": new_area.name}
 
 
 @router.get("/areas")
 def get_areas(
-    db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    db: Session = Depends(get_db), current_user: User = Depends(get_current_user)
 ):
 
-    areas = (
-        db.query(Area)
-        .filter(Area.user_id == current_user.id)
-        .all()
-    )
+    areas = db.query(Area).filter(Area.user_id == current_user.id).all()
 
     return areas
+
 
 @router.put("/areas/{area_id}")
 def update_area(
     area_id: str,
     area_data: AreaUpdate,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
 
     area = (
         db.query(Area)
-        .filter(
-            Area.id == area_id,
-            Area.user_id == current_user.id
-        )
+        .filter(Area.id == area_id, Area.user_id == current_user.id)
         .first()
     )
 
     if not area:
-        return {
-            "message": "Area not found"
-        }
+        return {"message": "Area not found"}
 
     area.name = area_data.name
 
     db.commit()
 
-    return {
-        "message": "Area updated"
-    }
+    return {"message": "Area updated"}
+
 
 @router.delete("/areas/{area_id}")
 def delete_area(
     area_id: str,
     db: Session = Depends(get_db),
-    current_user: User = Depends(get_current_user)
+    current_user: User = Depends(get_current_user),
 ):
 
     area = (
         db.query(Area)
-        .filter(
-            Area.id == area_id,
-            Area.user_id == current_user.id
-        )
+        .filter(Area.id == area_id, Area.user_id == current_user.id)
         .first()
     )
 
     if not area:
-        return {
-            "message": "Area not found"
-        }
+        return {"message": "Area not found"}
 
-    goals = (
-        db.query(Goal)
-        .filter(
-            Goal.area_id == area.id
-        )
-        .all()
-    )
+    goals = db.query(Goal).filter(Goal.area_id == area.id).all()
 
     print("Area ID:", area.id)
     print("Goals Found:", len(goals))
@@ -118,13 +88,7 @@ def delete_area(
 
         print("Deleting Goal:", goal.id)
 
-        tasks = (
-            db.query(Task)
-            .filter(
-                Task.goal_id == goal.id
-            )
-            .all()
-        )
+        tasks = db.query(Task).filter(Task.goal_id == goal.id).all()
 
         print("Tasks Found:", len(tasks))
 
@@ -141,6 +105,4 @@ def delete_area(
 
     db.commit()
 
-    return {
-        "message": "Area deleted"
-    }
+    return {"message": "Area deleted"}

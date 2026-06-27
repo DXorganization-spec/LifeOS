@@ -23,6 +23,7 @@ export default function AnalyticsPage() {
             const response = await api.get(
                 "/analytics/weekly"
             );
+            console.log(response.data)
 
             setData(response.data);
         } catch (error) {
