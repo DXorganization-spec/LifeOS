@@ -10,6 +10,29 @@ interface Achievement {
     description: string;
 }
 
+const allAchievements = [
+    {
+        title: "First Task",
+        description: "Complete your first task",
+    },
+    {
+        title: "Goal Crusher",
+        description: "Complete one goal",
+    },
+    {
+        title: "100 XP Club",
+        description: "Reach 100 XP",
+    },
+    {
+        title: "500 XP Club",
+        description: "Reach 500 XP",
+    },
+    {
+        title: "30 Day Streak",
+        description: "Maintain a 30 day streak",
+    },
+];
+
 export default function AchievementsPage() {
     const [achievements, setAchievements] = useState<
         Achievement[]
@@ -68,53 +91,48 @@ export default function AchievementsPage() {
                 }}
             >
                 <h2>
-                    Total Unlocked: {achievements.length}
+                    Total Unlocked:{" "}
+                    {achievements.length}
                 </h2>
             </div>
 
-            {achievements.length === 0 ? (
-                <div
-                    style={{
-                        background: "#111827",
-                        border: "1px solid #374151",
-                        borderRadius: "14px",
-                        padding: "30px",
-                        textAlign: "center",
-                    }}
-                >
-                    <h2>🏆</h2>
-                    <p
-                        style={{
-                            color: "#9ca3af",
-                        }}
-                    >
-                        No achievements unlocked yet.
-                    </p>
-                </div>
-            ) : (
-                <div
-                    style={{
-                        display: "grid",
-                        gridTemplateColumns:
-                            "repeat(auto-fit, minmax(300px, 1fr))",
-                        gap: "20px",
-                    }}
-                >
-                    {achievements.map(
-                        (achievement) => (
+            <div
+                style={{
+                    display: "grid",
+                    gridTemplateColumns:
+                        "repeat(auto-fit, minmax(300px, 1fr))",
+                    gap: "20px",
+                }}
+            >
+                {allAchievements.map(
+                    (achievement) => {
+                        const unlocked =
+                            achievements.some(
+                                (a) =>
+                                    a.title ===
+                                    achievement.title
+                            );
+
+                        return (
                             <div
                                 key={
-                                    achievement.id
+                                    achievement.title
                                 }
                                 style={{
                                     background:
                                         "#111827",
                                     border:
-                                        "1px solid #374151",
+                                        unlocked
+                                            ? "1px solid #22c55e"
+                                            : "1px solid #374151",
                                     borderRadius:
                                         "14px",
                                     padding:
                                         "25px",
+                                    opacity:
+                                        unlocked
+                                            ? 1
+                                            : 0.6,
                                 }}
                             >
                                 <h2
@@ -122,7 +140,9 @@ export default function AchievementsPage() {
                                         marginTop: 0,
                                     }}
                                 >
-                                    🏆{" "}
+                                    {unlocked
+                                        ? "🏆"
+                                        : "🔒"}{" "}
                                     {
                                         achievement.title
                                     }
@@ -138,11 +158,29 @@ export default function AchievementsPage() {
                                         achievement.description
                                     }
                                 </p>
+
+                                <p
+                                    style={{
+                                        color:
+                                            unlocked
+                                                ? "#22c55e"
+                                                : "#9ca3af",
+                                        fontWeight:
+                                            "bold",
+                                        marginTop:
+                                            "20px",
+                                    }}
+                                >
+                                    {unlocked
+                                        ? "✅ Unlocked"
+                                        : "🔒 Locked"}
+                                </p>
                             </div>
-                        )
-                    )}
-                </div>
-            )}
+                        );
+                    }
+                )}
+            </div>
         </div>
     );
 }
+
