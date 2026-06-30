@@ -1,3 +1,6 @@
+
+from datetime import date, timedelta
+
 from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
@@ -15,7 +18,6 @@ def heatmap(
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user)
 ):
-
     activities = (
         db.query(Activity)
         .filter(
@@ -24,4 +26,30 @@ def heatmap(
         .all()
     )
 
-    return activities
+    activity_map = {
+        activity.date: activity.count
+        for activity in activities
+    }
+
+    today = date.today()
+
+    data = []
+
+    for i in range(364, -1, -1):
+        day = today - timedelta(days=i)
+
+        data.append(
+            {
+                "id": str(day),
+                "date": day.strftime(
+                    "%Y-%m-%d"
+                ),
+                "count": activity_map.get(
+                    day,
+                    0
+                ),
+            }
+        )
+
+    return data
+
