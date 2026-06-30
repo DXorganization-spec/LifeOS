@@ -1,3 +1,4 @@
+
 "use client";
 
 import { useEffect, useState } from "react";
@@ -12,8 +13,10 @@ export default function AreasPage() {
     const [areas, setAreas] = useState<Area[]>([]);
     const [name, setName] = useState("");
 
-    const [editingId, setEditingId] = useState("");
-    const [editName, setEditName] = useState("");
+    const [editingId, setEditingId] =
+        useState("");
+    const [editName, setEditName] =
+        useState("");
 
     useEffect(() => {
         fetchAreas();
@@ -21,7 +24,9 @@ export default function AreasPage() {
 
     const fetchAreas = async () => {
         try {
-            const response = await api.get("/areas");
+            const response = await api.get(
+                "/areas"
+            );
             setAreas(response.data);
         } catch (error) {
             console.error(error);
@@ -41,11 +46,16 @@ export default function AreasPage() {
         }
     };
 
-    const updateArea = async (areaId: string) => {
+    const updateArea = async (
+        areaId: string
+    ) => {
         try {
-            await api.put(`/areas/${areaId}`, {
-                name: editName,
-            });
+            await api.put(
+                `/areas/${areaId}`,
+                {
+                    name: editName,
+                }
+            );
 
             setEditingId("");
             setEditName("");
@@ -56,15 +66,20 @@ export default function AreasPage() {
         }
     };
 
-    const deleteArea = async (areaId: string) => {
-        const confirmed = window.confirm(
-            "Delete this area?"
-        );
+    const deleteArea = async (
+        areaId: string
+    ) => {
+        const confirmed =
+            window.confirm(
+                "Delete this area?"
+            );
 
         if (!confirmed) return;
 
         try {
-            await api.delete(`/areas/${areaId}`);
+            await api.delete(
+                `/areas/${areaId}`
+            );
 
             fetchAreas();
         } catch (error) {
@@ -73,100 +88,261 @@ export default function AreasPage() {
     };
 
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Areas</h1>
-
-            <input
-                type="text"
-                placeholder="Area Name"
-                value={name}
-                onChange={(e) =>
-                    setName(e.target.value)
-                }
-            />
-
-            <button
-                onClick={createArea}
-                style={{ marginLeft: "10px" }}
+        <div
+            style={{
+                padding: "20px",
+                color: "white",
+                width: "100%",
+                maxWidth: "1100px",
+                margin: "0 auto",
+                boxSizing: "border-box",
+            }}
+        >
+            <h1
+                style={{
+                    fontSize:
+                        "clamp(28px, 6vw, 40px)",
+                    marginBottom: "30px",
+                }}
             >
-                Add Area
-            </button>
+                📂 Areas
+            </h1>
 
-            <hr />
+            <div
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    marginBottom: "30px",
+                }}
+            >
+                <input
+                    type="text"
+                    placeholder="Area Name"
+                    value={name}
+                    onChange={(e) =>
+                        setName(
+                            e.target.value
+                        )
+                    }
+                    style={{
+                        flex: 1,
+                        minWidth: "220px",
+                        padding: "12px",
+                        borderRadius:
+                            "10px",
+                        border:
+                            "1px solid #374151",
+                        background:
+                            "#111827",
+                        color: "white",
+                    }}
+                />
+
+                <button
+                    onClick={createArea}
+                    style={{
+                        padding:
+                            "12px 20px",
+                        borderRadius:
+                            "10px",
+                        border: "none",
+                        background:
+                            "#22c55e",
+                        color: "white",
+                        cursor: "pointer",
+                    }}
+                >
+                    Add Area
+                </button>
+            </div>
 
             {areas.map((area) => (
                 <div
                     key={area.id}
                     style={{
-                        marginBottom: "15px",
+                        marginBottom:
+                            "15px",
+                        background:
+                            "#111827",
+                        border:
+                            "1px solid #374151",
+                        borderRadius:
+                            "14px",
+                        padding: "20px",
                     }}
                 >
-                    {editingId === area.id ? (
+                    {editingId ===
+                    area.id ? (
                         <>
                             <input
-                                value={editName}
-                                onChange={(e) =>
+                                value={
+                                    editName
+                                }
+                                onChange={(
+                                    e
+                                ) =>
                                     setEditName(
-                                        e.target.value
+                                        e.target
+                                            .value
                                     )
                                 }
+                                style={{
+                                    width:
+                                        "100%",
+                                    padding:
+                                        "12px",
+                                    borderRadius:
+                                        "10px",
+                                    border:
+                                        "1px solid #374151",
+                                    background:
+                                        "#030712",
+                                    color:
+                                        "white",
+                                    boxSizing:
+                                        "border-box",
+                                }}
                             />
 
-                            <button
-                                onClick={() =>
-                                    updateArea(area.id)
-                                }
+                            <div
                                 style={{
-                                    marginLeft: "10px",
+                                    display:
+                                        "flex",
+                                    flexWrap:
+                                        "wrap",
+                                    gap:
+                                        "10px",
+                                    marginTop:
+                                        "15px",
                                 }}
                             >
-                                Save
-                            </button>
+                                <button
+                                    onClick={() =>
+                                        updateArea(
+                                            area.id
+                                        )
+                                    }
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#22c55e",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Save
+                                </button>
 
-                            <button
-                                onClick={() => {
-                                    setEditingId("");
-                                    setEditName("");
-                                }}
-                                style={{
-                                    marginLeft: "10px",
-                                }}
-                            >
-                                Cancel
-                            </button>
+                                <button
+                                    onClick={() => {
+                                        setEditingId(
+                                            ""
+                                        );
+                                        setEditName(
+                                            ""
+                                        );
+                                    }}
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#6b7280",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </>
                     ) : (
                         <>
-                            <strong>{area.name}</strong>
-
-                            <button
-                                onClick={() => {
-                                    setEditingId(
-                                        area.id
-                                    );
-                                    setEditName(
-                                        area.name
-                                    );
-                                }}
+                            <strong
                                 style={{
-                                    marginLeft: "10px",
+                                    fontSize:
+                                        "18px",
                                 }}
                             >
-                                Edit
-                            </button>
+                                {area.name}
+                            </strong>
 
-                            <button
-                                onClick={() =>
-                                    deleteArea(
-                                        area.id
-                                    )
-                                }
+                            <div
                                 style={{
-                                    marginLeft: "10px",
+                                    display:
+                                        "flex",
+                                    flexWrap:
+                                        "wrap",
+                                    gap:
+                                        "10px",
+                                    marginTop:
+                                        "15px",
                                 }}
                             >
-                                Delete
-                            </button>
+                                <button
+                                    onClick={() => {
+                                        setEditingId(
+                                            area.id
+                                        );
+                                        setEditName(
+                                            area.name
+                                        );
+                                    }}
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#2563eb",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Edit
+                                </button>
+
+                                <button
+                                    onClick={() =>
+                                        deleteArea(
+                                            area.id
+                                        )
+                                    }
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#dc2626",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </>
                     )}
                 </div>
@@ -174,3 +350,4 @@ export default function AreasPage() {
         </div>
     );
 }
+
