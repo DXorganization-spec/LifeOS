@@ -134,13 +134,27 @@ export default function TasksPage() {
             console.error(error);
         }
     };
+
     return (
-        <div style={{ padding: "20px" }}>
-            <h1>Tasks</h1>
-            <p>
-                Popup State:
-                {showAchievement ? "TRUE" : "FALSE"}
-            </p>
+        <div
+            style={{
+                padding: "20px",
+                color: "white",
+                width: "100%",
+                maxWidth: "1100px",
+                margin: "0 auto",
+                boxSizing: "border-box",
+            }}
+        >
+            <h1
+                style={{
+                    fontSize:
+                        "clamp(28px, 6vw, 40px)",
+                    marginBottom: "10px",
+                }}
+            >
+                ✅ Tasks
+            </h1>
 
             {showAchievement && (
                 <div
@@ -149,7 +163,8 @@ export default function TasksPage() {
                         top: "20px",
                         right: "20px",
                         background: "#111827",
-                        border: "2px solid #22c55e",
+                        border:
+                            "2px solid #22c55e",
                         color: "#ffffff",
                         padding: "16px 24px",
                         borderRadius: "12px",
@@ -179,43 +194,85 @@ export default function TasksPage() {
                 </div>
             )}
 
-            <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Task title"
-            />
-            <select
-                value={selectedGoal}
-                onChange={(e) =>
-                    setSelectedGoal(e.target.value)
-                }
-                style={{ marginLeft: "10px" }}
+            <div
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    marginBottom: "30px",
+                }}
             >
-                {goals.map((goal) => (
-                    <option
-                        key={goal.id}
-                        value={goal.id}
-                    >
-                        {goal.title}
-                    </option>
-                ))}
-            </select>
+                <input
+                    type="text"
+                    value={title}
+                    onChange={(e) =>
+                        setTitle(e.target.value)
+                    }
+                    placeholder="Task title"
+                    style={{
+                        flex: 1,
+                        minWidth: "220px",
+                        padding: "12px",
+                        borderRadius: "10px",
+                        border:
+                            "1px solid #374151",
+                        background: "#111827",
+                        color: "white",
+                    }}
+                />
 
-            <button
-                onClick={createTask}
-                style={{ marginLeft: "10px" }}
-            >
-                Add Task
-            </button>
+                <select
+                    value={selectedGoal}
+                    onChange={(e) =>
+                        setSelectedGoal(
+                            e.target.value
+                        )
+                    }
+                    style={{
+                        minWidth: "220px",
+                        padding: "12px",
+                        borderRadius: "10px",
+                        border:
+                            "1px solid #374151",
+                        background: "#111827",
+                        color: "white",
+                    }}
+                >
+                    {goals.map((goal) => (
+                        <option
+                            key={goal.id}
+                            value={goal.id}
+                        >
+                            {goal.title}
+                        </option>
+                    ))}
+                </select>
 
-            <hr />
+                <button
+                    onClick={createTask}
+                    style={{
+                        padding: "12px 20px",
+                        borderRadius: "10px",
+                        border: "none",
+                        background: "#22c55e",
+                        color: "white",
+                        cursor: "pointer",
+                    }}
+                >
+                    Add Task
+                </button>
+            </div>
 
             {tasks.map((task) => (
                 <div
                     key={task.id}
                     style={{
                         marginBottom: "15px",
+                        background: "#111827",
+                        border:
+                            "1px solid #374151",
+                        borderRadius: "14px",
+                        padding: "20px",
                     }}
                 >
                     {editingId === task.id ? (
@@ -227,94 +284,179 @@ export default function TasksPage() {
                                         e.target.value
                                     )
                                 }
+                                style={{
+                                    width: "100%",
+                                    padding:
+                                        "12px",
+                                    borderRadius:
+                                        "10px",
+                                    border:
+                                        "1px solid #374151",
+                                    background:
+                                        "#030712",
+                                    color:
+                                        "white",
+                                }}
                             />
 
                             <button
                                 onClick={() =>
-                                    updateTask(task.id)
+                                    updateTask(
+                                        task.id
+                                    )
                                 }
+                                style={{
+                                    marginTop:
+                                        "12px",
+                                    padding:
+                                        "10px 20px",
+                                    border:
+                                        "none",
+                                    borderRadius:
+                                        "10px",
+                                    background:
+                                        "#22c55e",
+                                    color:
+                                        "white",
+                                    cursor:
+                                        "pointer",
+                                }}
                             >
                                 Save
                             </button>
                         </>
                     ) : (
                         <>
-                            <button
-                                onClick={() =>
-                                    !task.completed &&
-                                    completeTask(task.id)
-                                }
+                            <div
                                 style={{
-                                    marginRight: "10px",
-                                    cursor:
-                                        task.completed
-                                            ? "default"
-                                            : "pointer",
+                                    display:
+                                        "flex",
+                                    alignItems:
+                                        "center",
+                                    flexWrap:
+                                        "wrap",
+                                    gap:
+                                        "10px",
                                 }}
                             >
-                                {task.completed
-                                    ? "☑"
-                                    : "☐"}
-                            </button>
-
-                            <strong
-                                style={{
-                                    textDecoration:
-                                        task.completed
-                                            ? "line-through"
-                                            : "none",
-                                    color:
-                                        task.completed
-                                            ? "gray"
-                                            : "black",
-                                }}
-                            >
-                                {task.title}
-                            </strong>
-
-                            {task.completed && (
-                                <span
+                                <button
+                                    onClick={() =>
+                                        !task.completed &&
+                                        completeTask(
+                                            task.id
+                                        )
+                                    }
                                     style={{
-                                        marginLeft:
-                                            "10px",
+                                        cursor:
+                                            task.completed
+                                                ? "default"
+                                                : "pointer",
+                                        background:
+                                            "transparent",
+                                        border:
+                                            "none",
+                                        fontSize:
+                                            "22px",
                                         color:
-                                            "green",
+                                            "white",
                                     }}
                                 >
-                                    ✅ Completed
-                                </span>
-                            )}
+                                    {task.completed
+                                        ? "☑"
+                                        : "☐"}
+                                </button>
 
-                            <button
-                                onClick={() => {
-                                    setEditingId(
-                                        task.id
-                                    );
-                                    setEditTitle(
-                                        task.title
-                                    );
-                                }}
+                                <strong
+                                    style={{
+                                        textDecoration:
+                                            task.completed
+                                                ? "line-through"
+                                                : "none",
+                                        color:
+                                            task.completed
+                                                ? "#9ca3af"
+                                                : "white",
+                                    }}
+                                >
+                                    {task.title}
+                                </strong>
+
+                                {task.completed && (
+                                    <span
+                                        style={{
+                                            color:
+                                                "#22c55e",
+                                        }}
+                                    >
+                                        ✅
+                                        Completed
+                                    </span>
+                                )}
+                            </div>
+
+                            <div
                                 style={{
-                                    marginLeft:
+                                    display:
+                                        "flex",
+                                    flexWrap:
+                                        "wrap",
+                                    gap:
                                         "10px",
+                                    marginTop:
+                                        "15px",
                                 }}
                             >
-                                Edit
-                            </button>
+                                <button
+                                    onClick={() => {
+                                        setEditingId(
+                                            task.id
+                                        );
+                                        setEditTitle(
+                                            task.title
+                                        );
+                                    }}
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#2563eb",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Edit
+                                </button>
 
-                            <button
-                                onClick={() =>
-                                    deleteTask(
-                                        task.id
-                                    )
-                                }
-                                style={{
-                                    marginLeft:
-                                        "10px",
-                                }}
-                            >
-                                Delete
-                            </button>
+                                <button
+                                    onClick={() =>
+                                        deleteTask(
+                                            task.id
+                                        )
+                                    }
+                                    style={{
+                                        padding:
+                                            "10px 20px",
+                                        border:
+                                            "none",
+                                        borderRadius:
+                                            "10px",
+                                        background:
+                                            "#dc2626",
+                                        color:
+                                            "white",
+                                        cursor:
+                                            "pointer",
+                                    }}
+                                >
+                                    Delete
+                                </button>
+                            </div>
                         </>
                     )}
                 </div>
@@ -322,3 +464,4 @@ export default function TasksPage() {
         </div>
     );
 }
+

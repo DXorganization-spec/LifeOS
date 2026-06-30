@@ -11,7 +11,9 @@ export default function DashboardPage() {
     useEffect(() => {
         const fetchDashboard = async () => {
             try {
-                const response = await api.get("/dashboard");
+                const response = await api.get(
+                    "/dashboard"
+                );
                 setData(response.data);
             } catch (error) {
                 console.error(error);
@@ -47,15 +49,18 @@ export default function DashboardPage() {
             style={{
                 padding: "30px",
                 color: "white",
+                width: "100%",
                 maxWidth: "1100px",
                 margin: "0 auto",
                 minHeight: "100vh",
                 background: "#030712",
+                boxSizing: "border-box",
             }}
         >
             <h1
                 style={{
-                    fontSize: "40px",
+                    fontSize:
+                        "clamp(28px, 6vw, 40px)",
                     marginBottom: "5px",
                 }}
             >
@@ -68,7 +73,8 @@ export default function DashboardPage() {
                     marginBottom: "30px",
                 }}
             >
-                Welcome back. Keep building your best self.
+                Welcome back. Keep building your
+                best self.
             </p>
 
             {/* XP CARD */}
@@ -106,8 +112,10 @@ export default function DashboardPage() {
                         style={{
                             width: `${progress}%`,
                             height: "100%",
-                            background: "#22c55e",
-                            transition: "width 0.5s ease",
+                            background:
+                                "#22c55e",
+                            transition:
+                                "width 0.5s ease",
                         }}
                     />
                 </div>
@@ -119,7 +127,7 @@ export default function DashboardPage() {
                 style={{
                     display: "grid",
                     gridTemplateColumns:
-                        "repeat(auto-fit, minmax(220px, 1fr))",
+                        "repeat(auto-fit, minmax(250px, 1fr))",
                     gap: "20px",
                 }}
             >
@@ -166,6 +174,7 @@ export default function DashboardPage() {
                 />
             </div>
 
+            {/* CHART */}
 
             <div
                 style={{
@@ -176,7 +185,9 @@ export default function DashboardPage() {
                     border: "1px solid #374151",
                 }}
             >
-                <h2>📈 Weekly XP Progress</h2>
+                <h2>
+                    📈 Weekly Productivity
+                </h2>
 
                 <XPChart />
             </div>
@@ -196,19 +207,24 @@ export default function DashboardPage() {
 
                 <p
                     style={{
-                        fontSize: "18px",
+                        fontSize:
+                            "clamp(16px, 4vw, 18px)",
                         color: "#d1d5db",
                     }}
                 >
-                    {data.progress_percentage >= 100
+                    {data.progress_percentage >=
+                    100
                         ? "🏆 Outstanding! You completed everything today."
-                        : data.progress_percentage >= 75
-                            ? "🔥 You're close to finishing. Keep going!"
-                            : data.progress_percentage >= 50
-                                ? "💪 You're making solid progress."
-                                : data.progress_percentage >= 25
-                                    ? "🚀 Good start. Stay consistent."
-                                    : "🌱 Small wins every day build extraordinary results."}
+                        : data.progress_percentage >=
+                          75
+                        ? "🔥 You're close to finishing. Keep going!"
+                        : data.progress_percentage >=
+                          50
+                        ? "💪 You're making solid progress."
+                        : data.progress_percentage >=
+                          25
+                        ? "🚀 Good start. Stay consistent."
+                        : "🌱 Small wins every day build extraordinary results."}
                 </p>
             </div>
         </div>
@@ -232,6 +248,7 @@ function StatCard({
                 borderRadius: "14px",
                 border: "1px solid #374151",
                 transition: "0.2s",
+                boxSizing: "border-box",
             }}
         >
             <h3
@@ -246,7 +263,8 @@ function StatCard({
             <h2
                 style={{
                     marginTop: "15px",
-                    fontSize: "32px",
+                    fontSize:
+                        "clamp(24px, 5vw, 32px)",
                 }}
             >
                 {value}
@@ -254,4 +272,3 @@ function StatCard({
         </div>
     );
 }
-
