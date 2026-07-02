@@ -25,11 +25,15 @@ export default function Sidebar() {
     useEffect(() => {
         const fetchStats = async () => {
             try {
-                const response = await api.get("/dashboard");
+                const response = await api.get(
+                    "/dashboard"
+                );
 
                 setXp(response.data.xp);
                 setLevel(response.data.level);
-                setStreak(response.data.current_streak);
+                setStreak(
+                    response.data.current_streak
+                );
             } catch (error) {
                 console.error(error);
             }
@@ -44,18 +48,22 @@ export default function Sidebar() {
         <aside
             style={{
                 width: "260px",
+                maxWidth: "80vw",
                 background: "#111827",
                 color: "white",
-                padding: "30px 20px",
+                padding: "25px 20px",
+                boxSizing: "border-box",
                 minHeight: "100vh",
                 borderRight: "1px solid #374151",
                 display: "flex",
                 flexDirection: "column",
+                overflowY: "auto",
             }}
         >
             <h1
                 style={{
-                    fontSize: "28px",
+                    fontSize:
+                        "clamp(24px, 5vw, 28px)",
                     marginBottom: "40px",
                 }}
             >
@@ -69,10 +77,11 @@ export default function Sidebar() {
                         href={item.href}
                         style={{
                             display: "block",
-                            padding: "12px 15px",
+                            padding: "14px 15px",
                             marginBottom: "10px",
                             borderRadius: "10px",
                             textDecoration: "none",
+                            fontSize: "16px",
                             color:
                                 pathname === item.href
                                     ? "#22c55e"
@@ -97,7 +106,8 @@ export default function Sidebar() {
                 style={{
                     marginTop: "auto",
                     paddingTop: "30px",
-                    borderTop: "1px solid #374151",
+                    borderTop:
+                        "1px solid #374151",
                 }}
             >
                 <p
@@ -122,8 +132,10 @@ export default function Sidebar() {
                         style={{
                             width: `${currentLevelXp}%`,
                             height: "100%",
-                            background: "#22c55e",
-                            transition: "0.3s",
+                            background:
+                                "#22c55e",
+                            transition:
+                                "width 0.3s ease",
                         }}
                     />
                 </div>
@@ -132,7 +144,7 @@ export default function Sidebar() {
                     style={{
                         marginTop: "10px",
                         color: "#9ca3af",
-                        fontSize: "14px",
+                        fontSize: "13px",
                     }}
                 >
                     {currentLevelXp} / 100 XP
@@ -152,9 +164,22 @@ export default function Sidebar() {
                     style={{
                         marginTop: "15px",
                         color: "#9ca3af",
+                        fontSize: "14px",
+                        wordBreak: "break-word",
                     }}
                 >
                     👤 Aditya Satpute
+                </p>
+
+                <p
+                    style={{
+                        marginTop: "25px",
+                        fontSize: "12px",
+                        color: "#6b7280",
+                        textAlign: "center",
+                    }}
+                >
+                    LifeOS v1.0 🚀
                 </p>
             </div>
         </aside>
