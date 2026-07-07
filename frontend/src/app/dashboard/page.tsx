@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import api from "@/services/api";
 import XPChart from "@/components/XPChart";
+import StatCard from "@/components/StatCard";
 
 export default function DashboardPage() {
     const [data, setData] = useState<any>(null);
@@ -173,102 +174,6 @@ export default function DashboardPage() {
                     value={data.completed_tasks}
                 />
             </div>
-
-            {/* CHART */}
-
-            <div
-                style={{
-                    marginTop: "35px",
-                    background: "#111827",
-                    padding: "25px",
-                    borderRadius: "14px",
-                    border: "1px solid #374151",
-                }}
-            >
-                <h2>
-                    📈 Weekly Productivity
-                </h2>
-
-                <XPChart />
-            </div>
-
-            {/* MOTIVATION */}
-
-            <div
-                style={{
-                    marginTop: "35px",
-                    background: "#111827",
-                    padding: "25px",
-                    borderRadius: "14px",
-                    border: "1px solid #374151",
-                }}
-            >
-                <h2>💡 Motivation</h2>
-
-                <p
-                    style={{
-                        fontSize:
-                            "clamp(16px, 4vw, 18px)",
-                        color: "#d1d5db",
-                    }}
-                >
-                    {data.progress_percentage >=
-                    100
-                        ? "🏆 Outstanding! You completed everything today."
-                        : data.progress_percentage >=
-                          75
-                        ? "🔥 You're close to finishing. Keep going!"
-                        : data.progress_percentage >=
-                          50
-                        ? "💪 You're making solid progress."
-                        : data.progress_percentage >=
-                          25
-                        ? "🚀 Good start. Stay consistent."
-                        : "🌱 Small wins every day build extraordinary results."}
-                </p>
-            </div>
-        </div>
-    );
-}
-
-function StatCard({
-    emoji,
-    title,
-    value,
-}: {
-    emoji: string;
-    title: string;
-    value: string | number;
-}) {
-    return (
-        <div
-            style={{
-                background: "#111827",
-                padding: "20px",
-                borderRadius: "14px",
-                border: "1px solid #374151",
-                transition: "0.2s",
-                boxSizing: "border-box",
-            }}
-        >
-            <h3
-                style={{
-                    margin: 0,
-                    color: "#9ca3af",
-                }}
-            >
-                {emoji} {title}
-            </h3>
-
-            <h2
-                style={{
-                    marginTop: "15px",
-                    fontSize:
-                        "clamp(24px, 5vw, 32px)",
-                }}
-            >
-                {value}
-            </h2>
         </div>
     );
 }
