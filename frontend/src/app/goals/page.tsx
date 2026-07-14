@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import toast from "react-hot-toast";
 
 interface Area {
     id: string;
@@ -35,85 +36,96 @@ export default function GoalsPage() {
 
     const fetchGoals = async () => {
         try {
-            const response = await api.get(
-                "/goals"
-            );
+            const response = await api.get("/goals");
             setGoals(response.data);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load goals.");
         }
     };
 
     const fetchAreas = async () => {
         try {
-            const response = await api.get(
-                "/areas"
-            );
+            const response = await api.get("/areas");
 
             setAreas(response.data);
 
             if (response.data.length > 0) {
-                setSelectedArea(
-                    response.data[0].id
-                );
+                setSelectedArea(response.data[0].id);
             }
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load areas.");
         }
     };
 
     const createGoal = async () => {
+        if (!title.trim()) {
+            toast.error("Please enter a goal title.");
+            return;
+        }
+
+        if (!selectedArea) {
+            toast.error("Please select an area.");
+            return;
+        }
+
         try {
             await api.post("/goals", {
-                title,
+                title: title.trim(),
                 area_id: selectedArea,
             });
 
             setTitle("");
-            fetchGoals();
+
+            await fetchGoals();
+
+            toast.success("Goal created successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to create goal.");
         }
     };
 
-    const updateGoal = async (
-        goalId: string
-    ) => {
+    const updateGoal = async (goalId: string) => {
+        if (!editTitle.trim()) {
+            toast.error("Goal title cannot be empty.");
+            return;
+        }
+
         try {
-            await api.put(
-                `/goals/${goalId}`,
-                {
-                    title: editTitle,
-                }
-            );
+            await api.put(`/goals/${goalId}`, {
+                title: editTitle.trim(),
+            });
 
             setEditingId("");
             setEditTitle("");
 
-            fetchGoals();
+            await fetchGoals();
+
+            toast.success("Goal updated successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to update goal.");
         }
     };
 
-    const deleteGoal = async (
-        goalId: string
-    ) => {
-        const confirmed =
-            window.confirm(
-                "Delete this goal?"
-            );
+    const deleteGoal = async (goalId: string) => {
+        const confirmed = window.confirm(
+            "Delete this goal?"
+        );
 
         if (!confirmed) return;
 
         try {
-            await api.delete(
-                `/goals/${goalId}`
-            );
+            await api.delete(`/goals/${goalId}`);
 
-            fetchGoals();
+            await fetchGoals();
+
+            toast.success("Goal deleted successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to delete goal.");
         }
     };
 
@@ -130,8 +142,7 @@ export default function GoalsPage() {
         >
             <h1
                 style={{
-                    fontSize:
-                        "clamp(28px, 6vw, 40px)",
+                    fontSize: "clamp(28px, 6vw, 40px)",
                     marginBottom: "30px",
                 }}
             >
@@ -150,20 +161,14 @@ export default function GoalsPage() {
                     type="text"
                     placeholder="Goal Title"
                     value={title}
-                    onChange={(e) =>
-                        setTitle(
-                            e.target.value
-                        )
-                    }
+                    onChange={(e) => setTitle(e.target.value)}
                     style={{
                         flex: 1,
                         minWidth: "220px",
                         padding: "12px",
                         borderRadius: "10px",
-                        border:
-                            "1px solid #374151",
-                        background:
-                            "#111827",
+                        border: "1px solid #374151",
+                        background: "#111827",
                         color: "white",
                     }}
                 />
@@ -171,18 +176,14 @@ export default function GoalsPage() {
                 <select
                     value={selectedArea}
                     onChange={(e) =>
-                        setSelectedArea(
-                            e.target.value
-                        )
+                        setSelectedArea(e.target.value)
                     }
                     style={{
                         minWidth: "220px",
                         padding: "12px",
                         borderRadius: "10px",
-                        border:
-                            "1px solid #374151",
-                        background:
-                            "#111827",
+                        border: "1px solid #374151",
+                        background: "#111827",
                         color: "white",
                     }}
                 >
@@ -198,16 +199,18 @@ export default function GoalsPage() {
 
                 <button
                     onClick={createGoal}
+                    disabled={!title.trim()}
                     style={{
-                        padding:
-                            "12px 20px",
-                        borderRadius:
-                            "10px",
+                        padding: "12px 20px",
+                        borderRadius: "10px",
                         border: "none",
-                        background:
-                            "#22c55e",
+                        background: title.trim()
+                            ? "#22c55e"
+                            : "#4b5563",
                         color: "white",
-                        cursor: "pointer",
+                        cursor: title.trim()
+                            ? "pointer"
+                            : "not-allowed",
                     }}
                 >
                     Add Goal
@@ -219,78 +222,77 @@ export default function GoalsPage() {
                     key={goal.id}
                     style={{
                         marginBottom: "15px",
-                        background:
-                            "#111827",
-                        border:
-                            "1px solid #374151",
-                        borderRadius:
-                            "14px",
+                        background: "#111827",
+                        border: "1px solid #374151",
+                        borderRadius: "14px",
                         padding: "20px",
                     }}
                 >
-                    {editingId ===
-                    goal.id ? (
+                    {editingId === goal.id ? (
                         <>
                             <input
-                                value={
-                                    editTitle
-                                }
-                                onChange={(
-                                    e
-                                ) =>
-                                    setEditTitle(
-                                        e.target
-                                            .value
-                                    )
+                                value={editTitle}
+                                onChange={(e) =>
+                                    setEditTitle(e.target.value)
                                 }
                                 style={{
-                                    width:
-                                        "100%",
-                                    padding:
-                                        "12px",
-                                    borderRadius:
-                                        "10px",
-                                    border:
-                                        "1px solid #374151",
-                                    background:
-                                        "#030712",
-                                    color:
-                                        "white",
+                                    width: "100%",
+                                    padding: "12px",
+                                    borderRadius: "10px",
+                                    border: "1px solid #374151",
+                                    background: "#030712",
+                                    color: "white",
+                                    boxSizing: "border-box",
                                 }}
                             />
 
-                            <button
-                                onClick={() =>
-                                    updateGoal(
-                                        goal.id
-                                    )
-                                }
+                            <div
                                 style={{
-                                    marginTop:
-                                        "12px",
-                                    padding:
-                                        "10px 20px",
-                                    border:
-                                        "none",
-                                    borderRadius:
-                                        "10px",
-                                    background:
-                                        "#22c55e",
-                                    color:
-                                        "white",
-                                    cursor:
-                                        "pointer",
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                    marginTop: "15px",
                                 }}
                             >
-                                Save
-                            </button>
+                                <button
+                                    onClick={() =>
+                                        updateGoal(goal.id)
+                                    }
+                                    style={{
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#22c55e",
+                                        color: "white",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Save
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setEditingId("");
+                                        setEditTitle("");
+                                    }}
+                                    style={{
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#6b7280",
+                                        color: "white",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </>
                     ) : (
                         <>
                             <strong
                                 style={{
-                                    fontSize:
-                                        "18px",
+                                    fontSize: "18px",
                                 }}
                             >
                                 {goal.title}
@@ -298,38 +300,24 @@ export default function GoalsPage() {
 
                             <div
                                 style={{
-                                    display:
-                                        "flex",
-                                    flexWrap:
-                                        "wrap",
-                                    gap:
-                                        "10px",
-                                    marginTop:
-                                        "15px",
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                    marginTop: "15px",
                                 }}
                             >
                                 <button
                                     onClick={() => {
-                                        setEditingId(
-                                            goal.id
-                                        );
-                                        setEditTitle(
-                                            goal.title
-                                        );
+                                        setEditingId(goal.id);
+                                        setEditTitle(goal.title);
                                     }}
                                     style={{
-                                        padding:
-                                            "10px 20px",
-                                        border:
-                                            "none",
-                                        borderRadius:
-                                            "10px",
-                                        background:
-                                            "#2563eb",
-                                        color:
-                                            "white",
-                                        cursor:
-                                            "pointer",
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#2563eb",
+                                        color: "white",
+                                        cursor: "pointer",
                                     }}
                                 >
                                     Edit
@@ -337,23 +325,15 @@ export default function GoalsPage() {
 
                                 <button
                                     onClick={() =>
-                                        deleteGoal(
-                                            goal.id
-                                        )
+                                        deleteGoal(goal.id)
                                     }
                                     style={{
-                                        padding:
-                                            "10px 20px",
-                                        border:
-                                            "none",
-                                        borderRadius:
-                                            "10px",
-                                        background:
-                                            "#dc2626",
-                                        color:
-                                            "white",
-                                        cursor:
-                                            "pointer",
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#dc2626",
+                                        color: "white",
+                                        cursor: "pointer",
                                     }}
                                 >
                                     Delete
@@ -366,4 +346,3 @@ export default function GoalsPage() {
         </div>
     );
 }
-
