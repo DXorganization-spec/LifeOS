@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import api from "@/services/api";
+import toast from "react-hot-toast";
 
 interface Goal {
     id: string;
@@ -32,8 +33,8 @@ export default function TasksPage() {
         useState("");
 
     useEffect(() => {
-        fetchTasks();
-        fetchGoals();
+        void fetchTasks();
+        void fetchGoals();
     }, []);
 
     const fetchTasks = async () => {
@@ -42,6 +43,7 @@ export default function TasksPage() {
             setTasks(response.data);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load tasks.");
         }
     };
 
@@ -55,35 +57,58 @@ export default function TasksPage() {
             }
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load goals.");
         }
     };
 
     const createTask = async () => {
+        if (!title.trim()) {
+            toast.error("Please enter a task title.");
+            return;
+        }
+
+        if (!selectedGoal) {
+            toast.error("Please select a goal.");
+            return;
+        }
+
         try {
             await api.post("/tasks", {
-                title,
+                title: title.trim(),
                 goal_id: selectedGoal,
             });
 
             setTitle("");
-            fetchTasks();
+
+            await fetchTasks();
+
+            toast.success("Task created successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to create task.");
         }
     };
 
     const updateTask = async (taskId: string) => {
+        if (!editTitle.trim()) {
+            toast.error("Task title cannot be empty.");
+            return;
+        }
+
         try {
             await api.put(`/tasks/${taskId}`, {
-                title: editTitle,
+                title: editTitle.trim(),
             });
 
             setEditingId("");
             setEditTitle("");
 
-            fetchTasks();
+            await fetchTasks();
+
+            toast.success("Task updated successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to update task.");
         }
     };
 
@@ -96,9 +121,13 @@ export default function TasksPage() {
 
         try {
             await api.delete(`/tasks/${taskId}`);
-            fetchTasks();
+
+            await fetchTasks();
+
+            toast.success("Task deleted successfully!");
         } catch (error) {
             console.error(error);
+            toast.error("Failed to delete task.");
         }
     };
 
@@ -129,9 +158,11 @@ export default function TasksPage() {
             }
 
             await fetchTasks();
+            toast.success("Task completed!");
 
         } catch (error) {
             console.error(error);
+            toast.error("Failed to complete task.");
         }
     };
 
@@ -250,16 +281,21 @@ export default function TasksPage() {
 
                 <button
                     onClick={createTask}
+                    disabled={!title.trim()}
                     style={{
                         padding: "12px 20px",
                         borderRadius: "10px",
                         border: "none",
-                        background: "#22c55e",
+                        background: title.trim()
+                            ? "#22c55e"
+                            : "#4b5563",
                         color: "white",
-                        cursor: "pointer",
+                        cursor: title.trim()
+                            ? "pointer"
+                            : "not-allowed",
                     }}
                 >
-                    Add Task
+Add Task
                 </button>
             </div>
 
@@ -269,8 +305,7 @@ export default function TasksPage() {
                     style={{
                         marginBottom: "15px",
                         background: "#111827",
-                        border:
-                            "1px solid #374151",
+                        border: "1px solid #374151",
                         borderRadius: "14px",
                         padding: "20px",
                     }}
@@ -280,85 +315,85 @@ export default function TasksPage() {
                             <input
                                 value={editTitle}
                                 onChange={(e) =>
-                                    setEditTitle(
-                                        e.target.value
-                                    )
+                                    setEditTitle(e.target.value)
                                 }
                                 style={{
                                     width: "100%",
-                                    padding:
-                                        "12px",
-                                    borderRadius:
-                                        "10px",
-                                    border:
-                                        "1px solid #374151",
-                                    background:
-                                        "#030712",
-                                    color:
-                                        "white",
+                                    padding: "12px",
+                                    borderRadius: "10px",
+                                    border: "1px solid #374151",
+                                    background: "#030712",
+                                    color: "white",
+                                    boxSizing: "border-box",
                                 }}
                             />
 
-                            <button
-                                onClick={() =>
-                                    updateTask(
-                                        task.id
-                                    )
-                                }
+                            <div
                                 style={{
-                                    marginTop:
-                                        "12px",
-                                    padding:
-                                        "10px 20px",
-                                    border:
-                                        "none",
-                                    borderRadius:
-                                        "10px",
-                                    background:
-                                        "#22c55e",
-                                    color:
-                                        "white",
-                                    cursor:
-                                        "pointer",
+                                    display: "flex",
+                                    gap: "10px",
+                                    marginTop: "15px",
+                                    flexWrap: "wrap",
                                 }}
                             >
-                                Save
-                            </button>
+                                <button
+                                    onClick={() =>
+                                        updateTask(task.id)
+                                    }
+                                    style={{
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#22c55e",
+                                        color: "white",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Save
+                                </button>
+
+                                <button
+                                    onClick={() => {
+                                        setEditingId("");
+                                        setEditTitle("");
+                                    }}
+                                    style={{
+                                        padding: "10px 20px",
+                                        border: "none",
+                                        borderRadius: "10px",
+                                        background: "#6b7280",
+                                        color: "white",
+                                        cursor: "pointer",
+                                    }}
+                                >
+                                    Cancel
+                                </button>
+                            </div>
                         </>
                     ) : (
                         <>
                             <div
                                 style={{
-                                    display:
-                                        "flex",
-                                    alignItems:
-                                        "center",
-                                    flexWrap:
-                                        "wrap",
-                                    gap:
-                                        "10px",
+                                    display: "flex",
+                                    alignItems: "center",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
                                 }}
                             >
                                 <button
                                     onClick={() =>
                                         !task.completed &&
-                                        completeTask(
-                                            task.id
-                                        )
+                                        completeTask(task.id)
                                     }
                                     style={{
-                                        cursor:
-                                            task.completed
-                                                ? "default"
-                                                : "pointer",
-                                        background:
-                                            "transparent",
-                                        border:
-                                            "none",
-                                        fontSize:
-                                            "22px",
-                                        color:
-                                            "white",
+                                        cursor: task.completed
+                                            ? "default"
+                                            : "pointer",
+                                        background: "transparent",
+                                        border: "none",
+                                        fontSize: "26px",
+                                        transition: "0.2s",
+                                        color: "white",
                                     }}
                                 >
                                     {task.completed
@@ -372,10 +407,10 @@ export default function TasksPage() {
                                             task.completed
                                                 ? "line-through"
                                                 : "none",
-                                        color:
-                                            task.completed
-                                                ? "#9ca3af"
-                                                : "white",
+                                        color: task.completed
+                                            ? "#9ca3af"
+                                            : "white",
+                                        fontSize: "17px",
                                     }}
                                 >
                                     {task.title}
@@ -384,26 +419,30 @@ export default function TasksPage() {
                                 {task.completed && (
                                     <span
                                         style={{
-                                            color:
-                                                "#22c55e",
+                                            background:
+                                                "#14532d",
+                                            color: "#86efac",
+                                            padding:
+                                                "4px 10px",
+                                            borderRadius:
+                                                "999px",
+                                            fontSize:
+                                                "12px",
+                                            fontWeight:
+                                                "bold",
                                         }}
                                     >
-                                        ✅
-                                        Completed
+                                        ✅ Completed
                                     </span>
                                 )}
                             </div>
 
                             <div
                                 style={{
-                                    display:
-                                        "flex",
-                                    flexWrap:
-                                        "wrap",
-                                    gap:
-                                        "10px",
-                                    marginTop:
-                                        "15px",
+                                    display: "flex",
+                                    flexWrap: "wrap",
+                                    gap: "10px",
+                                    marginTop: "15px",
                                 }}
                             >
                                 <button
@@ -464,4 +503,3 @@ export default function TasksPage() {
         </div>
     );
 }
-
