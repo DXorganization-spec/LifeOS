@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import api from "@/services/api";
+import toast from "react-hot-toast";
 
 interface Activity {
     id: string;
@@ -20,12 +21,11 @@ export default function HeatmapPage() {
 
     const fetchHeatmap = async () => {
         try {
-            const response =
-                await api.get("/heatmap");
-
+            const response = await api.get("/heatmap");
             setActivities(response.data);
         } catch (error) {
             console.error(error);
+            toast.error("Failed to load heatmap.");
         }
     };
 
@@ -33,7 +33,7 @@ export default function HeatmapPage() {
         if (count === 0) return "#161b22";
         if (count <= 2) return "#0e4429";
         if (count <= 5) return "#006d32";
-        if (count <= 8) return "#26a641";
+        if (count <= 6) return "#26a641";
 
         return "#39d353";
     };
@@ -86,19 +86,17 @@ export default function HeatmapPage() {
                     marginBottom: "30px",
                 }}
             >
-                Visualize your productivity
-                like GitHub contributions.
+                Track your consistency and daily productivity throughout your LifeOS journey.
             </p>
 
             <h3
                 style={{
                     marginBottom: "25px",
+                    color: "#d1d5db",
                 }}
             >
-                {totalContributions} tasks
-                completed in the last year
+                🔥 {totalContributions} total contributions
             </h3>
-
             <div
                 style={{
                     background: "#111827",
@@ -178,14 +176,10 @@ export default function HeatmapPage() {
 
                         <div
                             style={{
-                                display:
-                                    "grid",
-                                gridTemplateRows:
-                                    "repeat(7, 11px)",
-                                gridTemplateColumns:
-                                    "repeat(53, 11px)",
-                                gridAutoFlow:
-                                    "column",
+                                display: "grid",
+                                gridAutoFlow: "column",
+                                gridAutoColumns: "11px",
+                                gridTemplateRows: "repeat(7, 11px)",
                                 gap: "3px",
                             }}
                         >
@@ -194,23 +188,23 @@ export default function HeatmapPage() {
                                     activity
                                 ) => (
                                     <div
-                                        key={
-                                            activity.id
-                                        }
+                                        key={activity.id}
                                         title={`${activity.count} tasks completed on ${activity.date}`}
                                         style={{
-                                            width:
-                                                "11px",
-                                            height:
-                                                "11px",
-                                            background:
-                                                getColor(
-                                                    activity.count
-                                                ),
-                                            borderRadius:
-                                                "2px",
-                                            cursor:
-                                                "pointer",
+                                            width: "11px",
+                                            height: "11px",
+                                            background: getColor(activity.count),
+                                            borderRadius: "2px",
+                                            cursor: "pointer",
+                                            transition: "transform 0.15s ease",
+                                        }}
+                                        onMouseEnter={(e) => {
+                                            e.currentTarget.style.transform =
+                                                "scale(1.25)";
+                                        }}
+                                        onMouseLeave={(e) => {
+                                            e.currentTarget.style.transform =
+                                                "scale(1)";
                                         }}
                                     />
                                 )
