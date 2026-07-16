@@ -8,9 +8,12 @@ interface AnalyticsData {
     tasks_completed: number;
     xp_gained: number;
     current_streak: number;
+    longest_streak: number;
+    level: number;
+    total_xp: number;
+    active_days: number;
     productivity_score: number;
 }
-
 export default function AnalyticsPage() {
     const [data, setData] =
         useState<AnalyticsData | null>(null);
@@ -21,9 +24,8 @@ export default function AnalyticsPage() {
 
     const fetchAnalytics = async () => {
         try {
-            const response = await api.get(
-                "/analytics/weekly"
-            );
+            const response = await api.get("/analytics/weekly-summary");
+            console.log(response.data);
 
             setData(response.data);
         } catch (error) {
@@ -63,6 +65,26 @@ export default function AnalyticsPage() {
             emoji: "🔥",
             title: "Current Streak",
             value: data.current_streak,
+        },
+        {
+            emoji: "🏆",
+            title: "Longest Streak",
+            value: data.longest_streak,
+        },
+        {
+            emoji: "🎖️",
+            title: "Level",
+            value: data.level,
+        },
+        {
+            emoji: "💎",
+            title: "Total XP",
+            value: data.total_xp,
+        },
+        {
+            emoji: "📅",
+            title: "Active Days",
+            value: data.active_days,
         },
         {
             emoji: "📈",
@@ -206,15 +228,15 @@ export default function AnalyticsPage() {
                     }}
                 >
                     {data.productivity_score >=
-                    90
+                        90
                         ? "🏆 Outstanding performance! You're consistently completing your goals. Keep maintaining this momentum."
                         : data.productivity_score >=
-                          75
-                        ? "🔥 Excellent work! You're making strong progress toward your goals."
-                        : data.productivity_score >=
-                          50
-                        ? "💪 You're progressing well. Stay consistent to improve your productivity."
-                        : "🌱 Every great journey starts with small steps. Stay consistent and your progress will compound over time."}
+                            75
+                            ? "🔥 Excellent work! You're making strong progress toward your goals."
+                            : data.productivity_score >=
+                                50
+                                ? "💪 You're progressing well. Stay consistent to improve your productivity."
+                                : "🌱 Every great journey starts with small steps. Stay consistent and your progress will compound over time."}
                 </p>
             </div>
         </div>
