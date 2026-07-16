@@ -1,4 +1,3 @@
-
 from datetime import date, timedelta
 
 from fastapi import APIRouter, Depends
@@ -23,6 +22,7 @@ def heatmap(
         .filter(
             Activity.user_id == current_user.id
         )
+        .order_by(Activity.date.asc())
         .all()
     )
 
@@ -33,23 +33,30 @@ def heatmap(
 
     today = date.today()
 
+    minimum_start = today - timedelta(days=30)
+
+    if activities:
+        first_activity = activities[0].date
+
+        # Show at least the last 30 days,
+        # or start from the user's first activity
+        start_date = min(first_activity, minimum_start)
+    else:
+        start_date = minimum_start
+
     data = []
 
-    for i in range(364, -1, -1):
-        day = today - timedelta(days=i)
+    current_day = start_date
 
+    while current_day <= today:
         data.append(
             {
-                "id": str(day),
-                "date": day.strftime(
-                    "%Y-%m-%d"
-                ),
-                "count": activity_map.get(
-                    day,
-                    0
-                ),
+                "id": str(current_day),
+                "date": current_day.strftime("%Y-%m-%d"),
+                "count": activity_map.get(current_day, 0),
             }
         )
 
-    return data
+        current_day += timedelta(days=1)
 
+    return data
