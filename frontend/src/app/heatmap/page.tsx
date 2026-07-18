@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 
@@ -62,7 +63,10 @@ export default function HeatmapPage() {
     ];
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
                 padding: "30px",
                 color: "white",
@@ -70,34 +74,59 @@ export default function HeatmapPage() {
                 margin: "0 auto",
             }}
         >
-            <h1
-                style={{
-                    fontSize:
-                        "clamp(28px,6vw,40px)",
-                    marginBottom: "10px",
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.1,
                 }}
             >
-                🔥 Activity Heatmap
-            </h1>
+                <h1
+                    style={{
+                        fontSize:
+                            "clamp(28px,6vw,40px)",
+                        marginBottom: "10px",
+                    }}
+                >
+                    🔥 Activity Heatmap
+                </h1>
 
-            <p
-                style={{
-                    color: "#9ca3af",
-                    marginBottom: "30px",
+                <p
+                    style={{
+                        color: "#9ca3af",
+                        marginBottom: "30px",
+                    }}
+                >
+                    Track your consistency and daily productivity throughout your LifeOS journey.
+                </p>
+            </motion.div>
+
+            <motion.h3
+                initial={{ opacity: 0, y: 10 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.2,
                 }}
-            >
-                Track your consistency and daily productivity throughout your LifeOS journey.
-            </p>
-
-            <h3
                 style={{
                     marginBottom: "25px",
                     color: "#d1d5db",
                 }}
             >
                 🔥 {totalContributions} total contributions
-            </h3>
-            <div
+            </motion.h3>
+
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.25,
+                }}
                 style={{
                     background: "#111827",
                     border:
@@ -114,7 +143,19 @@ export default function HeatmapPage() {
                 >
                     {/* Months */}
 
-                    <div
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        variants={{
+                            hidden: { opacity: 0 },
+                            visible: {
+                                opacity: 1,
+                                transition: {
+                                    staggerChildren: 0.05,
+                                    delayChildren: 0.35,
+                                },
+                            },
+                        }}
                         style={{
                             display: "flex",
                             marginLeft: "30px",
@@ -126,16 +167,24 @@ export default function HeatmapPage() {
                     >
                         {months.map(
                             (month) => (
-                                <span
+                                <motion.span
                                     key={
                                         month
                                     }
+                                    variants={{
+                                        hidden: {
+                                            opacity: 0,
+                                        },
+                                        visible: {
+                                            opacity: 1,
+                                        },
+                                    }}
                                 >
                                     {month}
-                                </span>
+                                </motion.span>
                             )
                         )}
-                    </div>
+                    </motion.div>
 
                     <div
                         style={{
@@ -174,7 +223,19 @@ export default function HeatmapPage() {
 
                         {/* Grid */}
 
-                        <div
+                        <motion.div
+                            initial="hidden"
+                            animate="visible"
+                            variants={{
+                                hidden: { opacity: 0 },
+                                visible: {
+                                    opacity: 1,
+                                    transition: {
+                                        staggerChildren: 0.02,
+                                        delayChildren: 0.4,
+                                    },
+                                },
+                            }}
                             style={{
                                 display: "grid",
                                 gridAutoFlow: "column",
@@ -187,8 +248,22 @@ export default function HeatmapPage() {
                                 (
                                     activity
                                 ) => (
-                                    <div
+                                    <motion.div
                                         key={activity.id}
+                                        variants={{
+                                            hidden: {
+                                                opacity: 0,
+                                                scale: 0.5,
+                                            },
+                                            visible: {
+                                                opacity: 1,
+                                                scale: 1,
+                                                transition: {
+                                                    duration: 0.3,
+                                                    ease: "easeOut",
+                                                },
+                                            },
+                                        }}
                                         title={`${activity.count} tasks completed on ${activity.date}`}
                                         style={{
                                             width: "11px",
@@ -196,7 +271,6 @@ export default function HeatmapPage() {
                                             background: getColor(activity.count),
                                             borderRadius: "2px",
                                             cursor: "pointer",
-                                            transition: "transform 0.15s ease",
                                         }}
                                         onMouseEnter={(e) => {
                                             e.currentTarget.style.transform =
@@ -209,12 +283,24 @@ export default function HeatmapPage() {
                                     />
                                 )
                             )}
-                        </div>
+                        </motion.div>
                     </div>
                 </div>
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                        opacity: 1,
+                        transition: {
+                            staggerChildren: 0.08,
+                            delayChildren: 0.7,
+                        },
+                    },
+                }}
                 style={{
                     display: "flex",
                     justifyContent:
@@ -228,7 +314,14 @@ export default function HeatmapPage() {
                     flexWrap: "wrap",
                 }}
             >
-                <span>Less</span>
+                <motion.span
+                    variants={{
+                        hidden: { opacity: 0 },
+                        visible: { opacity: 1 },
+                    }}
+                >
+                    Less
+                </motion.span>
 
                 {[
                     "#161b22",
@@ -237,8 +330,15 @@ export default function HeatmapPage() {
                     "#26a641",
                     "#39d353",
                 ].map((color) => (
-                    <div
+                    <motion.div
                         key={color}
+                        variants={{
+                            hidden: { opacity: 0, scale: 0.5 },
+                            visible: {
+                                opacity: 1,
+                                scale: 1,
+                            },
+                        }}
                         style={{
                             width: "11px",
                             height: "11px",
@@ -250,8 +350,15 @@ export default function HeatmapPage() {
                     />
                 ))}
 
-                <span>More</span>
-            </div>
-        </div>
+                <motion.span
+                    variants={{
+                        hidden: { opacity: 0 },
+                        visible: { opacity: 1 },
+                    }}
+                >
+                    More
+                </motion.span>
+            </motion.div>
+        </motion.div>
     );
 }
