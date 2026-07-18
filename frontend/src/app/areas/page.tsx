@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 
@@ -95,15 +96,27 @@ export default function AreasPage() {
             }
         };
 
-        return (
-            <div
-                style={{
-                    padding: "20px",
-                    color: "white",
-                    width: "100%",
-                    maxWidth: "1100px",
-                    margin: "0 auto",
-                    boxSizing: "border-box",
+    return (
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
+            style={{
+                padding: "20px",
+                color: "white",
+                width: "100%",
+                maxWidth: "1100px",
+                margin: "0 auto",
+                boxSizing: "border-box",
+            }}
+        >
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.1,
                 }}
             >
                 <h1
@@ -115,57 +128,100 @@ export default function AreasPage() {
                 >
                     📂 Areas
                 </h1>
+            </motion.div>
 
-                <div
+            <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.15,
+                }}
+                style={{
+                    display: "flex",
+                    flexWrap: "wrap",
+                    gap: "12px",
+                    marginBottom: "30px",
+                }}
+            >
+                <input
+                    type="text"
+                    placeholder="Area Name"
+                    value={name}
+                    onChange={(e) =>
+                        setName(
+                            e.target.value
+                        )
+                    }
                     style={{
-                        display: "flex",
-                        flexWrap: "wrap",
-                        gap: "12px",
-                        marginBottom: "30px",
+                        flex: 1,
+                        minWidth: "220px",
+                        padding: "12px",
+                        borderRadius:
+                            "10px",
+                        border:
+                            "1px solid #374151",
+                        background:
+                            "#111827",
+                        color: "white",
+                    }}
+                />
+
+                <motion.button
+                    onClick={createArea}
+                    disabled={!name.trim()}
+                    whileHover={
+                        name.trim()
+                            ? {
+                                  scale: 1.05,
+                                  boxShadow:
+                                      "0 8px 20px rgba(34,197,94,0.25)",
+                              }
+                            : {}
+                    }
+                    whileTap={
+                        name.trim()
+                            ? { scale: 0.98 }
+                            : {}
+                    }
+                    transition={{
+                        duration: 0.2,
+                    }}
+                    style={{
+                        padding: "12px 20px",
+                        borderRadius: "10px",
+                        border: "none",
+                        background: name.trim() ? "#22c55e" : "#4b5563",
+                        color: "white",
+                        cursor: name.trim() ? "pointer" : "not-allowed",
                     }}
                 >
-                    <input
-                        type="text"
-                        placeholder="Area Name"
-                        value={name}
-                        onChange={(e) =>
-                            setName(
-                                e.target.value
-                            )
-                        }
-                        style={{
-                            flex: 1,
-                            minWidth: "220px",
-                            padding: "12px",
-                            borderRadius:
-                                "10px",
-                            border:
-                                "1px solid #374151",
-                            background:
-                                "#111827",
-                            color: "white",
-                        }}
-                    />
+                    Add Area
+                </motion.button>
+            </motion.div>
 
-                    <button
-                        onClick={createArea}
-                        disabled={!name.trim()}
-                        style={{
-                            padding: "12px 20px",
-                            borderRadius: "10px",
-                            border: "none",
-                            background: name.trim() ? "#22c55e" : "#4b5563",
-                            color: "white",
-                            cursor: name.trim() ? "pointer" : "not-allowed",
-                        }}
-                    >
-                        Add Area
-                    </button>
-                </div>
-
+            <AnimatePresence mode="popLayout">
                 {areas.map((area) => (
-                    <div
+                    <motion.div
                         key={area.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                            duration: 0.4,
+                            ease: "easeOut",
+                        }}
+                        whileHover={
+                            editingId !== area.id
+                                ? {
+                                      y: -4,
+                                      scale: 1.01,
+                                      boxShadow:
+                                          "0 10px 30px rgba(34,197,94,0.15)",
+                                  }
+                                : {}
+                        }
                         style={{
                             marginBottom:
                                 "15px",
@@ -180,7 +236,17 @@ export default function AreasPage() {
                     >
                         {editingId ===
                             area.id ? (
-                            <>
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                }}
+                                transition={{
+                                    duration: 0.3,
+                                }}
+                            >
                                 <input
                                     value={
                                         editName
@@ -223,12 +289,20 @@ export default function AreasPage() {
                                             "15px",
                                     }}
                                 >
-                                    <button
+                                    <motion.button
                                         onClick={() =>
                                             updateArea(
                                                 area.id
                                             )
                                         }
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(34,197,94,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
                                         style={{
                                             padding:
                                                 "10px 20px",
@@ -245,9 +319,9 @@ export default function AreasPage() {
                                         }}
                                     >
                                         Save
-                                    </button>
+                                    </motion.button>
 
-                                    <button
+                                    <motion.button
                                         onClick={() => {
                                             setEditingId(
                                                 ""
@@ -255,6 +329,14 @@ export default function AreasPage() {
                                             setEditName(
                                                 ""
                                             );
+                                        }}
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(107,114,128,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
                                         }}
                                         style={{
                                             padding:
@@ -272,11 +354,21 @@ export default function AreasPage() {
                                         }}
                                     >
                                         Cancel
-                                    </button>
+                                    </motion.button>
                                 </div>
-                            </>
+                            </motion.div>
                         ) : (
-                            <>
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                }}
+                                transition={{
+                                    duration: 0.3,
+                                }}
+                            >
                                 <strong
                                     style={{
                                         fontSize:
@@ -298,7 +390,7 @@ export default function AreasPage() {
                                             "15px",
                                     }}
                                 >
-                                    <button
+                                    <motion.button
                                         onClick={() => {
                                             setEditingId(
                                                 area.id
@@ -306,6 +398,14 @@ export default function AreasPage() {
                                             setEditName(
                                                 area.name
                                             );
+                                        }}
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(37,99,235,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
                                         }}
                                         style={{
                                             padding:
@@ -323,14 +423,22 @@ export default function AreasPage() {
                                         }}
                                     >
                                         Edit
-                                    </button>
+                                    </motion.button>
 
-                                    <button
+                                    <motion.button
                                         onClick={() =>
                                             deleteArea(
                                                 area.id
                                             )
                                         }
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(220,38,38,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
                                         style={{
                                             padding:
                                                 "10px 20px",
@@ -347,13 +455,14 @@ export default function AreasPage() {
                                         }}
                                     >
                                         Delete
-                                    </button>
+                                    </motion.button>
                                 </div>
-                            </>
+                            </motion.div>
                         )}
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
-        );
-    }
+            </AnimatePresence>
+        </motion.div>
+    );
+}
 
