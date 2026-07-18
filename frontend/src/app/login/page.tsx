@@ -17,13 +17,23 @@ export default function LoginPage() {
         password,
       });
 
+      const accessToken =
+        response.data?.access_token;
+
+      if (!accessToken) {
+        localStorage.removeItem("token");
+        alert("Login Failed");
+        return;
+      }
+
       localStorage.setItem(
         "token",
-        response.data.access_token
+        accessToken
       );
 
       router.push("/dashboard");
     } catch (error) {
+      localStorage.removeItem("token");
       alert("Login Failed");
       console.error(error);
     }

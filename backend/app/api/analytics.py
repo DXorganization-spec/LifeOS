@@ -154,10 +154,10 @@ def weekly_chart(
 @router.post("/test-weekly-report")
 def test_weekly_report(
     db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user),
 ):
     send_weekly_reports(db)
 
     return {
         "message": "Weekly reports sent"
     }
-

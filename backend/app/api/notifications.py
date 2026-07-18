@@ -1,10 +1,11 @@
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
+from app.core.auth import get_current_user
+from app.models.user import User
 from app.services.email_service import (
     send_email
 )
 from sqlalchemy.orm import Session
-from fastapi import Depends
 
 from app.database.dependencies import get_db
 from app.services.reminder_service import (
@@ -15,10 +16,12 @@ router = APIRouter()
 
 
 @router.get("/test-email")
-def test_email():
+def test_email(
+    current_user: User = Depends(get_current_user)
+):
 
     send_email(
-        "17aditya.satpute@gmail.com",
+        current_user.email,
         "LifeOS Test Email",
         "Congratulations! LifeOS email system is working."
     )
@@ -29,7 +32,8 @@ def test_email():
 
 @router.get("/send-reminders")
 def send_reminders(
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    _current_user: User = Depends(get_current_user)
 ):
 
     send_daily_reminders(db)

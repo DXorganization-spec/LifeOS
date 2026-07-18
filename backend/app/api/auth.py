@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.core.auth import get_current_user
 
@@ -48,17 +48,19 @@ def login_user(
     )
 
     if not db_user:
-        return {
-            "message": "Invalid email or password"
-        }
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
 
     if not verify_password(
         user.password,
         db_user.password_hash
     ):
-        return {
-            "message": "Invalid email or password"
-        }
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid email or password"
+        )
 
     access_token = create_access_token(
         {
@@ -84,4 +86,3 @@ def get_me(
         "current_streak": current_user.current_streak,
         "longest_streak": current_user.longest_streak
     }
-

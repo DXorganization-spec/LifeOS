@@ -1,12 +1,25 @@
+import os
 from datetime import datetime, timedelta
 
+from dotenv import load_dotenv
 from jose import JWTError, jwt
 
-SECRET_KEY = "lifeos_super_secret_key_change_later"
+load_dotenv()
 
-ALGORITHM = "HS256"
+ALGORITHM = os.getenv("JWT_ALGORITHM", "HS256")
 
-ACCESS_TOKEN_EXPIRE_MINUTES = 60
+ACCESS_TOKEN_EXPIRE_MINUTES = int(
+    os.getenv("JWT_ACCESS_TOKEN_EXPIRE_MINUTES", "60")
+)
+
+
+def get_secret_key() -> str:
+    secret_key = os.getenv("JWT_SECRET_KEY")
+
+    if not secret_key:
+        raise RuntimeError("JWT_SECRET_KEY is not set")
+
+    return secret_key
 
 
 def create_access_token(data: dict):
@@ -26,7 +39,7 @@ def create_access_token(data: dict):
 
     return jwt.encode(
         to_encode,
-        SECRET_KEY,
+        get_secret_key(),
         algorithm=ALGORITHM
     )
 
@@ -37,7 +50,7 @@ def verify_access_token(token: str):
 
         payload = jwt.decode(
             token,
-            SECRET_KEY,
+            get_secret_key(),
             algorithms=[ALGORITHM]
         )
 
