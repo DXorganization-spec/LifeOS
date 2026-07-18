@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 
@@ -94,7 +95,10 @@ export default function AnalyticsPage() {
     ];
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
                 padding: "30px",
                 color: "white",
@@ -105,29 +109,51 @@ export default function AnalyticsPage() {
                 boxSizing: "border-box",
             }}
         >
-            <h1
-                style={{
-                    fontSize:
-                        "clamp(28px,6vw,40px)",
-                    marginBottom: "10px",
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.1,
                 }}
             >
-                📊 Analytics
-            </h1>
+                <h1
+                    style={{
+                        fontSize:
+                            "clamp(28px,6vw,40px)",
+                        marginBottom: "10px",
+                    }}
+                >
+                    📊 Analytics
+                </h1>
 
-            <p
-                style={{
-                    color: "#9ca3af",
-                    marginBottom: "35px",
-                    fontSize: "16px",
+                <p
+                    style={{
+                        color: "#9ca3af",
+                        marginBottom: "35px",
+                        fontSize: "16px",
+                    }}
+                >
+                    Monitor your performance,
+                    streaks and achievements in one
+                    place.
+                </p>
+            </motion.div>
+
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                        opacity: 1,
+                        transition: {
+                            staggerChildren: 0.08,
+                            delayChildren: 0.25,
+                        },
+                    },
                 }}
-            >
-                Monitor your performance,
-                streaks and achievements in one
-                place.
-            </p>
-
-            <div
                 style={{
                     display: "grid",
                     gridTemplateColumns:
@@ -136,8 +162,33 @@ export default function AnalyticsPage() {
                 }}
             >
                 {cards.map((card) => (
-                    <div
+                    <motion.div
                         key={card.title}
+                        variants={{
+                            hidden: {
+                                opacity: 0,
+                                y: 20,
+                            },
+                            visible: {
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    ease: "easeOut",
+                                },
+                            },
+                        }}
+                        whileHover={{
+                            y: -6,
+                            scale: 1.02,
+                            borderColor: "#22c55e",
+                            boxShadow:
+                                "0 12px 30px rgba(34,197,94,0.18)",
+                        }}
+                        transition={{
+                            duration: 0.3,
+                            ease: "easeOut",
+                        }}
                         style={{
                             background:
                                 "#111827",
@@ -147,26 +198,8 @@ export default function AnalyticsPage() {
                                 "16px",
                             padding: "22px",
                             cursor: "pointer",
-                            transition:
-                                "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
                             boxShadow:
                                 "0 4px 10px rgba(0,0,0,0.25)",
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.transform =
-                                "translateY(-6px)";
-                            e.currentTarget.style.borderColor =
-                                "#22c55e";
-                            e.currentTarget.style.boxShadow =
-                                "0 12px 30px rgba(34,197,94,0.18)";
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.transform =
-                                "translateY(0)";
-                            e.currentTarget.style.borderColor =
-                                "#374151";
-                            e.currentTarget.style.boxShadow =
-                                "0 4px 10px rgba(0,0,0,0.25)";
                         }}
                     >
                         <h3
@@ -197,11 +230,18 @@ export default function AnalyticsPage() {
                         >
                             {card.value}
                         </h2>
-                    </div>
+                    </motion.div>
                 ))}
-            </div>
+            </motion.div>
 
-            <div
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.8,
+                }}
                 style={{
                     marginTop: "40px",
                     background: "#111827",
@@ -238,7 +278,7 @@ export default function AnalyticsPage() {
                                 ? "💪 You're progressing well. Stay consistent to improve your productivity."
                                 : "🌱 Every great journey starts with small steps. Stay consistent and your progress will compound over time."}
                 </p>
-            </div>
-        </div>
+            </motion.div>
+        </motion.div>
     );
 }
