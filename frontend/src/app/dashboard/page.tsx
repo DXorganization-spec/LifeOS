@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import api from "@/services/api";
 import XPChart from "@/components/XPChart";
 import StatCard from "@/components/StatCard";
+import DashboardSkeleton from "@/components/skeletons/DashboardSkeleton";
 
 export default function DashboardPage() {
     const [data, setData] = useState<any>(null);
@@ -29,12 +30,17 @@ export default function DashboardPage() {
         return (
             <div
                 style={{
+                    padding: "30px",
                     color: "white",
-                    padding: "40px",
-                    fontSize: "22px",
+                    width: "100%",
+                    maxWidth: "1100px",
+                    margin: "0 auto",
+                    minHeight: "100vh",
+                    background: "#030712",
+                    boxSizing: "border-box",
                 }}
             >
-                Loading Dashboard...
+                <DashboardSkeleton />
             </div>
         );
     }

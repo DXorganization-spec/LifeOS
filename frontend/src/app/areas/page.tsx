@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import ListSkeleton from "@/components/skeletons/ListSkeleton";
 
 interface Area {
     id: string;
@@ -14,6 +15,7 @@ interface Area {
 export default function AreasPage() {
     const [areas, setAreas] = useState<Area[]>([]);
     const [name, setName] = useState("");
+    const [loading, setLoading] = useState(true);
 
     const [editingId, setEditingId] =
         useState("");
@@ -26,11 +28,14 @@ export default function AreasPage() {
 
     const fetchAreas = async () => {
         try {
+            setLoading(true);
             const response = await api.get("/areas");
             setAreas(response.data);
         } catch (error) {
             console.error(error);
             toast.error("Failed to load areas.");
+        } finally {
+            setLoading(false);
         }
     };
     const createArea = async () => {
@@ -110,39 +115,43 @@ export default function AreasPage() {
                 boxSizing: "border-box",
             }}
         >
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: 0.1,
-                }}
-            >
-                <h1
-                    style={{
-                        fontSize:
-                            "clamp(28px, 6vw, 40px)",
-                        marginBottom: "30px",
-                    }}
-                >
-                    📂 Areas
-                </h1>
-            </motion.div>
+            {loading ? (
+                <ListSkeleton count={5} />
+            ) : (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeOut",
+                            delay: 0.1,
+                        }}
+                    >
+                        <h1
+                            style={{
+                                fontSize:
+                                    "clamp(28px, 6vw, 40px)",
+                                marginBottom: "30px",
+                            }}
+                        >
+                            📂 Areas
+                        </h1>
+                    </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: 0.15,
-                }}
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "12px",
-                    marginBottom: "30px",
+                    <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeOut",
+                            delay: 0.15,
+                        }}
+                        style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "12px",
+                            marginBottom: "30px",
                 }}
             >
                 <input
@@ -462,6 +471,8 @@ export default function AreasPage() {
                     </motion.div>
                 ))}
             </AnimatePresence>
+                </>
+            )}
         </motion.div>
     );
 }

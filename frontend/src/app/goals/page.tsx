@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import ListSkeleton from "@/components/skeletons/ListSkeleton";
 
 interface Area {
     id: string;
@@ -20,6 +21,7 @@ interface Goal {
 export default function GoalsPage() {
     const [goals, setGoals] = useState<Goal[]>([]);
     const [areas, setAreas] = useState<Area[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const [title, setTitle] = useState("");
     const [selectedArea, setSelectedArea] =
@@ -57,6 +59,8 @@ export default function GoalsPage() {
         } catch (error) {
             console.error(error);
             toast.error("Failed to load areas.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -144,40 +148,44 @@ export default function GoalsPage() {
                 boxSizing: "border-box",
             }}
         >
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: 0.1,
-                }}
-            >
-                <h1
-                    style={{
-                        fontSize: "clamp(28px, 6vw, 40px)",
-                        marginBottom: "30px",
-                    }}
-                >
-                    🎯 Goals
-                </h1>
-            </motion.div>
+            {loading ? (
+                <ListSkeleton count={5} />
+            ) : (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeOut",
+                            delay: 0.1,
+                        }}
+                    >
+                        <h1
+                            style={{
+                                fontSize: "clamp(28px, 6vw, 40px)",
+                                marginBottom: "30px",
+                            }}
+                        >
+                            🎯 Goals
+                        </h1>
+                    </motion.div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: 0.15,
-                }}
-                style={{
-                    display: "flex",
-                    flexWrap: "wrap",
-                    gap: "12px",
-                    marginBottom: "30px",
-                }}
-            >
+                    <motion.div
+                        initial={{ opacity: 0, y: 15 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeOut",
+                            delay: 0.15,
+                        }}
+                        style={{
+                            display: "flex",
+                            flexWrap: "wrap",
+                            gap: "12px",
+                            marginBottom: "30px",
+                        }}
+                    >
                 <input
                     type="text"
                     placeholder="Goal Title"
@@ -452,6 +460,8 @@ export default function GoalsPage() {
                     </motion.div>
                 ))}
             </AnimatePresence>
+                </>
+            )}
         </motion.div>
     );
 }

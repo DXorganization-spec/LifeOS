@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import ListSkeleton from "@/components/skeletons/ListSkeleton";
 
 interface Goal {
     id: string;
@@ -20,6 +21,7 @@ interface Task {
 export default function TasksPage() {
     const [tasks, setTasks] = useState<Task[]>([]);
     const [goals, setGoals] = useState<Goal[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const [title, setTitle] = useState("");
     const [selectedGoal, setSelectedGoal] = useState("");
@@ -59,6 +61,8 @@ export default function TasksPage() {
         } catch (error) {
             console.error(error);
             toast.error("Failed to load goals.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -181,27 +185,31 @@ export default function TasksPage() {
                 boxSizing: "border-box",
             }}
         >
-            <motion.div
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{
-                    duration: 0.6,
-                    ease: "easeOut",
-                    delay: 0.1,
-                }}
-            >
-                <h1
-                    style={{
-                        fontSize:
-                            "clamp(28px, 6vw, 40px)",
-                        marginBottom: "10px",
-                    }}
-                >
-                    ✅ Tasks
-                </h1>
-            </motion.div>
+            {loading ? (
+                <ListSkeleton count={5} />
+            ) : (
+                <>
+                    <motion.div
+                        initial={{ opacity: 0, y: -20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{
+                            duration: 0.6,
+                            ease: "easeOut",
+                            delay: 0.1,
+                        }}
+                    >
+                        <h1
+                            style={{
+                                fontSize:
+                                    "clamp(28px, 6vw, 40px)",
+                                marginBottom: "10px",
+                            }}
+                        >
+                            ✅ Tasks
+                        </h1>
+                    </motion.div>
 
-            <AnimatePresence>
+                    <AnimatePresence>
                 {showAchievement && (
                     <motion.div
                         initial={{ opacity: 0, x: 100 }}
@@ -639,6 +647,8 @@ export default function TasksPage() {
                     </motion.div>
                 ))}
             </AnimatePresence>
+                </>
+            )}
         </motion.div>
     );
 }

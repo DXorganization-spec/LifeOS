@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import AnalyticsSkeleton from "@/components/skeletons/AnalyticsSkeleton";
 
 interface AnalyticsData {
     tasks_completed: number;
@@ -41,12 +42,16 @@ export default function AnalyticsPage() {
         return (
             <div
                 style={{
+                    padding: "30px",
                     color: "white",
-                    padding: "40px",
-                    fontSize: "22px",
+                    width: "100%",
+                    maxWidth: "1100px",
+                    margin: "0 auto",
+                    minHeight: "100vh",
+                    boxSizing: "border-box",
                 }}
             >
-                Loading Analytics...
+                <AnalyticsSkeleton />
             </div>
         );
     }

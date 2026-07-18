@@ -4,6 +4,7 @@ import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
+import HeatmapSkeleton from "@/components/skeletons/HeatmapSkeleton";
 
 interface Activity {
     id: string;
@@ -15,6 +16,7 @@ export default function HeatmapPage() {
     const [activities, setActivities] = useState<
         Activity[]
     >([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         void fetchHeatmap();
@@ -22,11 +24,14 @@ export default function HeatmapPage() {
 
     const fetchHeatmap = async () => {
         try {
+            setLoading(true);
             const response = await api.get("/heatmap");
             setActivities(response.data);
         } catch (error) {
             console.error(error);
             toast.error("Failed to load heatmap.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -61,6 +66,21 @@ export default function HeatmapPage() {
         "May",
         "Jun",
     ];
+
+    if (loading) {
+        return (
+            <div
+                style={{
+                    padding: "30px",
+                    color: "white",
+                    maxWidth: "1100px",
+                    margin: "0 auto",
+                }}
+            >
+                <HeatmapSkeleton />
+            </div>
+        );
+    }
 
     return (
         <motion.div
