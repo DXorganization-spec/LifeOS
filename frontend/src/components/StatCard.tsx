@@ -1,5 +1,7 @@
 "use client";
 
+import { motion } from "framer-motion";
+
 interface StatCardProps {
     emoji: string;
     title: string;
@@ -12,7 +14,7 @@ export default function StatCard({
     value,
 }: StatCardProps) {
     return (
-        <div
+        <motion.div
             style={{
                 background: "#111827",
                 padding: "20px",
@@ -20,26 +22,19 @@ export default function StatCard({
                 border: "1px solid #374151",
                 boxSizing: "border-box",
                 cursor: "pointer",
-                transition:
-                    "transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease",
                 boxShadow:
                     "0 4px 10px rgba(0,0,0,0.25)",
             }}
-            onMouseEnter={(e) => {
-                e.currentTarget.style.transform =
-                    "translateY(-6px)";
-                e.currentTarget.style.borderColor =
-                    "#22c55e";
-                e.currentTarget.style.boxShadow =
-                    "0 12px 30px rgba(34,197,94,0.18)";
+            whileHover={{
+                y: -6,
+                scale: 1.02,
+                borderColor: "#22c55e",
+                boxShadow:
+                    "0 12px 30px rgba(34,197,94,0.18)",
             }}
-            onMouseLeave={(e) => {
-                e.currentTarget.style.transform =
-                    "translateY(0)";
-                e.currentTarget.style.borderColor =
-                    "#374151";
-                e.currentTarget.style.boxShadow =
-                    "0 4px 10px rgba(0,0,0,0.25)";
+            transition={{
+                duration: 0.3,
+                ease: "easeOut",
             }}
         >
             <h3
@@ -63,6 +58,6 @@ export default function StatCard({
             >
                 {value}
             </h2>
-        </div>
+        </motion.div>
     );
 }

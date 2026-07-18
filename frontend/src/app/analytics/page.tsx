@@ -25,7 +25,7 @@ export default function AnalyticsPage() {
     const fetchAnalytics = async () => {
         try {
             const response = await api.get("/analytics/weekly-summary");
-            console.log(response.data);
+    
 
             setData(response.data);
         } catch (error) {

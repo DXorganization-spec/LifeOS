@@ -2,6 +2,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import api from "@/services/api";
 import XPChart from "@/components/XPChart";
 import StatCard from "@/components/StatCard";
@@ -46,7 +47,10 @@ export default function DashboardPage() {
     );
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
                 padding: "30px",
                 color: "white",
@@ -58,29 +62,50 @@ export default function DashboardPage() {
                 boxSizing: "border-box",
             }}
         >
-            <h1
-                style={{
-                    fontSize:
-                        "clamp(28px, 6vw, 40px)",
-                    marginBottom: "5px",
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.1,
                 }}
             >
-                🚀 LifeOS Dashboard
-            </h1>
+                <h1
+                    style={{
+                        fontSize:
+                            "clamp(28px, 6vw, 40px)",
+                        marginBottom: "5px",
+                    }}
+                >
+                    🚀 LifeOS Dashboard
+                </h1>
 
-            <p
-                style={{
-                    color: "#9ca3af",
-                    marginBottom: "30px",
-                }}
-            >
-                Welcome back. Keep building your
-                best self.
-            </p>
+                <p
+                    style={{
+                        color: "#9ca3af",
+                        marginBottom: "30px",
+                    }}
+                >
+                    Welcome back. Keep building your
+                    best self.
+                </p>
+            </motion.div>
 
             {/* XP CARD */}
 
-            <div
+            <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.2,
+                }}
+                whileHover={{
+                    boxShadow:
+                        "0 8px 25px rgba(34,197,94,0.1)",
+                }}
                 style={{
                     background: "#111827",
                     padding: "25px",
@@ -109,22 +134,40 @@ export default function DashboardPage() {
                         overflow: "hidden",
                     }}
                 >
-                    <div
-                        style={{
+                    <motion.div
+                        initial={{ width: 0 }}
+                        animate={{
                             width: `${progress}%`,
+                        }}
+                        transition={{
+                            duration: 0.8,
+                            ease: "easeOut",
+                            delay: 0.3,
+                        }}
+                        style={{
                             height: "100%",
                             background:
                                 "#22c55e",
-                            transition:
-                                "width 0.5s ease",
                         }}
                     />
                 </div>
-            </div>
+            </motion.div>
 
             {/* STATS */}
 
-            <div
+            <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                    hidden: { opacity: 0 },
+                    visible: {
+                        opacity: 1,
+                        transition: {
+                            staggerChildren: 0.08,
+                            delayChildren: 0.35,
+                        },
+                    },
+                }}
                 style={{
                     display: "grid",
                     gridTemplateColumns:
@@ -132,48 +175,68 @@ export default function DashboardPage() {
                     gap: "20px",
                 }}
             >
-                <StatCard
-                    emoji="🔥"
-                    title="Current Streak"
-                    value={`${data.current_streak} Days`}
-                />
-
-                <StatCard
-                    emoji="🏆"
-                    title="Longest Streak"
-                    value={`${data.longest_streak} Days`}
-                />
-
-                <StatCard
-                    emoji="📈"
-                    title="Today's Progress"
-                    value={`${data.progress_percentage}%`}
-                />
-
-                <StatCard
-                    emoji="📂"
-                    title="Areas"
-                    value={data.areas}
-                />
-
-                <StatCard
-                    emoji="🎯"
-                    title="Goals"
-                    value={data.goals}
-                />
-
-                <StatCard
-                    emoji="📝"
-                    title="Tasks"
-                    value={data.tasks}
-                />
-
-                <StatCard
-                    emoji="✅"
-                    title="Completed"
-                    value={data.completed_tasks}
-                />
-            </div>
-        </div>
+                {[
+                    {
+                        emoji: "🔥",
+                        title: "Current Streak",
+                        value: `${data.current_streak} Days`,
+                    },
+                    {
+                        emoji: "🏆",
+                        title: "Longest Streak",
+                        value: `${data.longest_streak} Days`,
+                    },
+                    {
+                        emoji: "📈",
+                        title: "Today's Progress",
+                        value: `${data.progress_percentage}%`,
+                    },
+                    {
+                        emoji: "📂",
+                        title: "Areas",
+                        value: data.areas,
+                    },
+                    {
+                        emoji: "🎯",
+                        title: "Goals",
+                        value: data.goals,
+                    },
+                    {
+                        emoji: "📝",
+                        title: "Tasks",
+                        value: data.tasks,
+                    },
+                    {
+                        emoji: "✅",
+                        title: "Completed",
+                        value: data.completed_tasks,
+                    },
+                ].map((card, index) => (
+                    <motion.div
+                        key={index}
+                        variants={{
+                            hidden: {
+                                opacity: 0,
+                                y: 20,
+                            },
+                            visible: {
+                                opacity: 1,
+                                y: 0,
+                                transition: {
+                                    duration: 0.5,
+                                    ease: "easeOut",
+                                },
+                            },
+                        }}
+                    >
+                        <StatCard
+                            emoji={card.emoji}
+                            title={card.title}
+                            value={card.value}
+                        />
+                    </motion.div>
+                ))}
+            </motion.div>
+        </motion.div>
     );
 }
