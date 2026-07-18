@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 
@@ -167,7 +168,10 @@ export default function TasksPage() {
     };
 
     return (
-        <div
+        <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5, ease: "easeOut" }}
             style={{
                 padding: "20px",
                 color: "white",
@@ -177,55 +181,78 @@ export default function TasksPage() {
                 boxSizing: "border-box",
             }}
         >
-            <h1
-                style={{
-                    fontSize:
-                        "clamp(28px, 6vw, 40px)",
-                    marginBottom: "10px",
+            <motion.div
+                initial={{ opacity: 0, y: -20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.1,
                 }}
             >
-                ✅ Tasks
-            </h1>
-
-            {showAchievement && (
-                <div
+                <h1
                     style={{
-                        position: "fixed",
-                        top: "20px",
-                        right: "20px",
-                        background: "#111827",
-                        border:
-                            "2px solid #22c55e",
-                        color: "#ffffff",
-                        padding: "16px 24px",
-                        borderRadius: "12px",
-                        boxShadow:
-                            "0 0 20px rgba(34,197,94,0.4)",
-                        zIndex: 9999,
-                        minWidth: "300px",
+                        fontSize:
+                            "clamp(28px, 6vw, 40px)",
+                        marginBottom: "10px",
                     }}
                 >
-                    <h3
+                    ✅ Tasks
+                </h1>
+            </motion.div>
+
+            <AnimatePresence>
+                {showAchievement && (
+                    <motion.div
+                        initial={{ opacity: 0, x: 100 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: 100 }}
+                        transition={{ duration: 0.4 }}
                         style={{
-                            margin: 0,
-                            color: "#22c55e",
+                            position: "fixed",
+                            top: "20px",
+                            right: "20px",
+                            background: "#111827",
+                            border:
+                                "2px solid #22c55e",
+                            color: "#ffffff",
+                            padding: "16px 24px",
+                            borderRadius: "12px",
+                            boxShadow:
+                                "0 0 20px rgba(34,197,94,0.4)",
+                            zIndex: 9999,
+                            minWidth: "300px",
                         }}
                     >
-                        🎉 Achievement Unlocked!
-                    </h3>
+                        <h3
+                            style={{
+                                margin: 0,
+                                color: "#22c55e",
+                            }}
+                        >
+                            🎉 Achievement Unlocked!
+                        </h3>
 
-                    <p
-                        style={{
-                            marginTop: "10px",
-                            marginBottom: 0,
-                        }}
-                    >
-                        🏆 {achievementText}
-                    </p>
-                </div>
-            )}
+                        <p
+                            style={{
+                                marginTop: "10px",
+                                marginBottom: 0,
+                            }}
+                        >
+                            🏆 {achievementText}
+                        </p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
-            <div
+            <motion.div
+                initial={{ opacity: 0, y: 15 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                    duration: 0.6,
+                    ease: "easeOut",
+                    delay: 0.15,
+                }}
                 style={{
                     display: "flex",
                     flexWrap: "wrap",
@@ -279,9 +306,26 @@ export default function TasksPage() {
                     ))}
                 </select>
 
-                <button
+                <motion.button
                     onClick={createTask}
                     disabled={!title.trim()}
+                    whileHover={
+                        title.trim()
+                            ? {
+                                  scale: 1.05,
+                                  boxShadow:
+                                      "0 8px 20px rgba(34,197,94,0.25)",
+                              }
+                            : {}
+                    }
+                    whileTap={
+                        title.trim()
+                            ? { scale: 0.98 }
+                            : {}
+                    }
+                    transition={{
+                        duration: 0.2,
+                    }}
                     style={{
                         padding: "12px 20px",
                         borderRadius: "10px",
@@ -295,211 +339,306 @@ export default function TasksPage() {
                             : "not-allowed",
                     }}
                 >
-Add Task
-                </button>
-            </div>
+                    Add Task
+                </motion.button>
+            </motion.div>
 
-            {tasks.map((task) => (
-                <div
-                    key={task.id}
-                    style={{
-                        marginBottom: "15px",
-                        background: "#111827",
-                        border: "1px solid #374151",
-                        borderRadius: "14px",
-                        padding: "20px",
-                    }}
-                >
-                    {editingId === task.id ? (
-                        <>
-                            <input
-                                value={editTitle}
-                                onChange={(e) =>
-                                    setEditTitle(e.target.value)
-                                }
-                                style={{
-                                    width: "100%",
-                                    padding: "12px",
-                                    borderRadius: "10px",
-                                    border: "1px solid #374151",
-                                    background: "#030712",
-                                    color: "white",
-                                    boxSizing: "border-box",
+            <AnimatePresence mode="popLayout">
+                {tasks.map((task) => (
+                    <motion.div
+                        key={task.id}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{
+                            duration: 0.4,
+                            ease: "easeOut",
+                        }}
+                        whileHover={
+                            editingId !== task.id
+                                ? {
+                                      y: -4,
+                                      scale: 1.01,
+                                      boxShadow:
+                                          "0 10px 30px rgba(34,197,94,0.15)",
+                                  }
+                                : {}
+                        }
+                        style={{
+                            marginBottom: "15px",
+                            background: "#111827",
+                            border: "1px solid #374151",
+                            borderRadius: "14px",
+                            padding: "20px",
+                        }}
+                    >
+                        {editingId === task.id ? (
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
                                 }}
-                            />
-
-                            <div
-                                style={{
-                                    display: "flex",
-                                    gap: "10px",
-                                    marginTop: "15px",
-                                    flexWrap: "wrap",
+                                animate={{
+                                    opacity: 1,
                                 }}
-                            >
-                                <button
-                                    onClick={() =>
-                                        updateTask(task.id)
-                                    }
-                                    style={{
-                                        padding: "10px 20px",
-                                        border: "none",
-                                        borderRadius: "10px",
-                                        background: "#22c55e",
-                                        color: "white",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Save
-                                </button>
-
-                                <button
-                                    onClick={() => {
-                                        setEditingId("");
-                                        setEditTitle("");
-                                    }}
-                                    style={{
-                                        padding: "10px 20px",
-                                        border: "none",
-                                        borderRadius: "10px",
-                                        background: "#6b7280",
-                                        color: "white",
-                                        cursor: "pointer",
-                                    }}
-                                >
-                                    Cancel
-                                </button>
-                            </div>
-                        </>
-                    ) : (
-                        <>
-                            <div
-                                style={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    flexWrap: "wrap",
-                                    gap: "10px",
+                                transition={{
+                                    duration: 0.3,
                                 }}
                             >
-                                <button
-                                    onClick={() =>
-                                        !task.completed &&
-                                        completeTask(task.id)
+                                <input
+                                    value={editTitle}
+                                    onChange={(e) =>
+                                        setEditTitle(e.target.value)
                                     }
                                     style={{
-                                        cursor: task.completed
-                                            ? "default"
-                                            : "pointer",
-                                        background: "transparent",
-                                        border: "none",
-                                        fontSize: "26px",
-                                        transition: "0.2s",
+                                        width: "100%",
+                                        padding: "12px",
+                                        borderRadius: "10px",
+                                        border: "1px solid #374151",
+                                        background: "#030712",
                                         color: "white",
+                                        boxSizing: "border-box",
                                     }}
-                                >
-                                    {task.completed
-                                        ? "☑"
-                                        : "☐"}
-                                </button>
+                                />
 
-                                <strong
+                                <div
                                     style={{
-                                        textDecoration:
-                                            task.completed
-                                                ? "line-through"
-                                                : "none",
-                                        color: task.completed
-                                            ? "#9ca3af"
-                                            : "white",
-                                        fontSize: "17px",
+                                        display: "flex",
+                                        gap: "10px",
+                                        marginTop: "15px",
+                                        flexWrap: "wrap",
                                     }}
                                 >
-                                    {task.title}
-                                </strong>
-
-                                {task.completed && (
-                                    <span
+                                    <motion.button
+                                        onClick={() =>
+                                            updateTask(task.id)
+                                        }
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(34,197,94,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
                                         style={{
-                                            background:
-                                                "#14532d",
-                                            color: "#86efac",
-                                            padding:
-                                                "4px 10px",
-                                            borderRadius:
-                                                "999px",
-                                            fontSize:
-                                                "12px",
-                                            fontWeight:
-                                                "bold",
+                                            padding: "10px 20px",
+                                            border: "none",
+                                            borderRadius: "10px",
+                                            background: "#22c55e",
+                                            color: "white",
+                                            cursor: "pointer",
                                         }}
                                     >
-                                        ✅ Completed
-                                    </span>
-                                )}
-                            </div>
+                                        Save
+                                    </motion.button>
 
-                            <div
-                                style={{
-                                    display: "flex",
-                                    flexWrap: "wrap",
-                                    gap: "10px",
-                                    marginTop: "15px",
+                                    <motion.button
+                                        onClick={() => {
+                                            setEditingId("");
+                                            setEditTitle("");
+                                        }}
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(107,114,128,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
+                                        style={{
+                                            padding: "10px 20px",
+                                            border: "none",
+                                            borderRadius: "10px",
+                                            background: "#6b7280",
+                                            color: "white",
+                                            cursor: "pointer",
+                                        }}
+                                    >
+                                        Cancel
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        ) : (
+                            <motion.div
+                                initial={{
+                                    opacity: 0,
+                                }}
+                                animate={{
+                                    opacity: 1,
+                                }}
+                                transition={{
+                                    duration: 0.3,
                                 }}
                             >
-                                <button
-                                    onClick={() => {
-                                        setEditingId(
-                                            task.id
-                                        );
-                                        setEditTitle(
-                                            task.title
-                                        );
-                                    }}
+                                <div
                                     style={{
-                                        padding:
-                                            "10px 20px",
-                                        border:
-                                            "none",
-                                        borderRadius:
-                                            "10px",
-                                        background:
-                                            "#2563eb",
-                                        color:
-                                            "white",
-                                        cursor:
-                                            "pointer",
+                                        display: "flex",
+                                        alignItems: "center",
+                                        flexWrap: "wrap",
+                                        gap: "10px",
                                     }}
                                 >
-                                    Edit
-                                </button>
+                                    <motion.button
+                                        onClick={() =>
+                                            !task.completed &&
+                                            completeTask(task.id)
+                                        }
+                                        whileHover={
+                                            !task.completed
+                                                ? {
+                                                      scale: 1.1,
+                                                  }
+                                                : {}
+                                        }
+                                        whileTap={
+                                            !task.completed
+                                                ? {
+                                                      scale: 0.95,
+                                                  }
+                                                : {}
+                                        }
+                                        style={{
+                                            cursor: task.completed
+                                                ? "default"
+                                                : "pointer",
+                                            background: "transparent",
+                                            border: "none",
+                                            fontSize: "26px",
+                                            color: "white",
+                                        }}
+                                    >
+                                        {task.completed
+                                            ? "☑"
+                                            : "☐"}
+                                    </motion.button>
 
-                                <button
-                                    onClick={() =>
-                                        deleteTask(
-                                            task.id
-                                        )
-                                    }
+                                    <strong
+                                        style={{
+                                            textDecoration:
+                                                task.completed
+                                                    ? "line-through"
+                                                    : "none",
+                                            color: task.completed
+                                                ? "#9ca3af"
+                                                : "white",
+                                            fontSize: "17px",
+                                        }}
+                                    >
+                                        {task.title}
+                                    </strong>
+
+                                    {task.completed && (
+                                        <motion.span
+                                            initial={{
+                                                opacity: 0,
+                                                scale: 0.8,
+                                            }}
+                                            animate={{
+                                                opacity: 1,
+                                                scale: 1,
+                                            }}
+                                            transition={{
+                                                duration: 0.3,
+                                            }}
+                                            style={{
+                                                background:
+                                                    "#14532d",
+                                                color: "#86efac",
+                                                padding:
+                                                    "4px 10px",
+                                                borderRadius:
+                                                    "999px",
+                                                fontSize:
+                                                    "12px",
+                                                fontWeight:
+                                                    "bold",
+                                            }}
+                                        >
+                                            ✅ Completed
+                                        </motion.span>
+                                    )}
+                                </div>
+
+                                <div
                                     style={{
-                                        padding:
-                                            "10px 20px",
-                                        border:
-                                            "none",
-                                        borderRadius:
-                                            "10px",
-                                        background:
-                                            "#dc2626",
-                                        color:
-                                            "white",
-                                        cursor:
-                                            "pointer",
+                                        display: "flex",
+                                        flexWrap: "wrap",
+                                        gap: "10px",
+                                        marginTop: "15px",
                                     }}
                                 >
-                                    Delete
-                                </button>
-                            </div>
-                        </>
-                    )}
-                </div>
-            ))}
-        </div>
+                                    <motion.button
+                                        onClick={() => {
+                                            setEditingId(
+                                                task.id
+                                            );
+                                            setEditTitle(
+                                                task.title
+                                            );
+                                        }}
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(37,99,235,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
+                                        style={{
+                                            padding:
+                                                "10px 20px",
+                                            border:
+                                                "none",
+                                            borderRadius:
+                                                "10px",
+                                            background:
+                                                "#2563eb",
+                                            color:
+                                                "white",
+                                            cursor:
+                                                "pointer",
+                                        }}
+                                    >
+                                        Edit
+                                    </motion.button>
+
+                                    <motion.button
+                                        onClick={() =>
+                                            deleteTask(
+                                                task.id
+                                            )
+                                        }
+                                        whileHover={{
+                                            scale: 1.05,
+                                            boxShadow:
+                                                "0 6px 15px rgba(220,38,38,0.3)",
+                                        }}
+                                        whileTap={{
+                                            scale: 0.95,
+                                        }}
+                                        style={{
+                                            padding:
+                                                "10px 20px",
+                                            border:
+                                                "none",
+                                            borderRadius:
+                                                "10px",
+                                            background:
+                                                "#dc2626",
+                                            color:
+                                                "white",
+                                            cursor:
+                                                "pointer",
+                                        }}
+                                    >
+                                        Delete
+                                    </motion.button>
+                                </div>
+                            </motion.div>
+                        )}
+                    </motion.div>
+                ))}
+            </AnimatePresence>
+        </motion.div>
     );
 }
