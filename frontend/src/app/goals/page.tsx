@@ -32,12 +32,7 @@ export default function GoalsPage() {
     const [editTitle, setEditTitle] =
         useState("");
 
-    useEffect(() => {
-        fetchGoals();
-        fetchAreas();
-    }, []);
-
-    const fetchGoals = async () => {
+        const fetchGoals = async () => {
         try {
             const response = await api.get("/goals");
             setGoals(response.data);
@@ -63,6 +58,13 @@ export default function GoalsPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchGoals();
+        fetchAreas();
+    }, []);
+
+
 
     const createGoal = async () => {
         if (!title.trim()) {

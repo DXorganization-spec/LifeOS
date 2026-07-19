@@ -38,10 +38,6 @@ export default function AchievementsPage() {
         Achievement[]
     >([]);
 
-    useEffect(() => {
-        void fetchAchievements();
-    }, []);
-
     const fetchAchievements = async () => {
         try {
             const response = await api.get(
@@ -54,6 +50,12 @@ export default function AchievementsPage() {
         }
     };
 
+
+    useEffect(() => {
+        void fetchAchievements();
+    }, []);
+
+    
     return (
         <div
             style={{

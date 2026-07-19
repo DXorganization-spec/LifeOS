@@ -22,10 +22,6 @@ export default function AreasPage() {
     const [editName, setEditName] =
         useState("");
 
-    useEffect(() => {
-        fetchAreas();
-    }, []);
-
     const fetchAreas = async () => {
         try {
             setLoading(true);
@@ -38,6 +34,12 @@ export default function AreasPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        fetchAreas();
+    }, []);
+
+    
     const createArea = async () => {
         if (!name.trim()) {
             toast.error("Please enter an area name.");

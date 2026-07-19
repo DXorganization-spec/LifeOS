@@ -18,11 +18,7 @@ export default function HeatmapPage() {
     >([]);
     const [loading, setLoading] = useState(true);
 
-    useEffect(() => {
-        void fetchHeatmap();
-    }, []);
-
-    const fetchHeatmap = async () => {
+        const fetchHeatmap = async () => {
         try {
             setLoading(true);
             const response = await api.get("/heatmap");
@@ -34,6 +30,12 @@ export default function HeatmapPage() {
             setLoading(false);
         }
     };
+
+    useEffect(() => {
+        void fetchHeatmap();
+    }, []);
+
+
 
     const getColor = (count: number) => {
         if (count === 0) return "#161b22";

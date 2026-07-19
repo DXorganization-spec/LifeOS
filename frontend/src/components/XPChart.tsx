@@ -49,7 +49,7 @@ export default function XPChart() {
                     response.data
                 );
 
-                const data = Array.isArray(response.data)
+                const data: WeeklyActivity[] = Array.isArray(response.data)
                     ? response.data
                     : [];
 

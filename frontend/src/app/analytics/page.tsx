@@ -20,10 +20,6 @@ export default function AnalyticsPage() {
     const [data, setData] =
         useState<AnalyticsData | null>(null);
 
-    useEffect(() => {
-        void fetchAnalytics();
-    }, []);
-
     const fetchAnalytics = async () => {
         try {
             const response = await api.get("/analytics/weekly-summary");
@@ -38,6 +34,12 @@ export default function AnalyticsPage() {
         }
     };
 
+
+    useEffect(() => {
+        void fetchAnalytics();
+    }, []);
+
+    
     if (!data) {
         return (
             <div

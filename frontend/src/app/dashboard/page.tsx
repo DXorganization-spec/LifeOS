@@ -4,12 +4,23 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import api from "@/services/api";
-import XPChart from "@/components/XPChart";
 import StatCard from "@/components/StatCard";
 import DashboardSkeleton from "@/components/skeletons/DashboardSkeleton";
 
 export default function DashboardPage() {
-    const [data, setData] = useState<any>(null);
+    interface DashboardData {
+        level: number;
+        xp: number;
+        current_streak: number;
+        longest_streak: number;
+        progress_percentage: number;
+        areas: number;
+        goals: number;
+        tasks: number;
+        completed_tasks: number;
+    }
+
+    const [data, setData] = useState<DashboardData | null>(null);
 
     useEffect(() => {
         const fetchDashboard = async () => {
