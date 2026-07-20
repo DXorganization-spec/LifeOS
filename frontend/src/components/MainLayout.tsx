@@ -1,7 +1,6 @@
-
 "use client";
 
-import { ReactNode, useState, useEffect } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 
 interface MainLayoutProps {
@@ -19,17 +18,12 @@ export default function MainLayout({
 
     useEffect(() => {
         const checkScreen = () => {
-            setIsMobile(
-                window.innerWidth <= 768
-            );
+            setIsMobile(window.innerWidth <= 768);
         };
 
         checkScreen();
 
-        window.addEventListener(
-            "resize",
-            checkScreen
-        );
+        window.addEventListener("resize", checkScreen);
 
         return () =>
             window.removeEventListener(
@@ -42,7 +36,8 @@ export default function MainLayout({
         <div
             style={{
                 display: "flex",
-                minHeight: "100vh",
+                height: "100vh",
+                overflow: "hidden",
                 background: "#030712",
             }}
         >
@@ -50,22 +45,18 @@ export default function MainLayout({
             {isMobile && (
                 <button
                     onClick={() =>
-                        setSidebarOpen(
-                            !sidebarOpen
-                        )
+                        setSidebarOpen(!sidebarOpen)
                     }
                     style={{
                         position: "fixed",
                         top: "20px",
                         left: "20px",
                         zIndex: 1001,
-                        background:
-                            "#111827",
+                        background: "#111827",
                         color: "white",
                         border: "none",
                         borderRadius: "8px",
-                        padding:
-                            "10px 14px",
+                        padding: "10px 14px",
                         cursor: "pointer",
                     }}
                 >
@@ -80,50 +71,45 @@ export default function MainLayout({
                         ? "fixed"
                         : "relative",
                     left:
-                        isMobile &&
-                        !sidebarOpen
+                        isMobile && !sidebarOpen
                             ? "-280px"
                             : "0",
-                    transition:
-                        "left 0.3s ease",
+                    transition: "left 0.3s ease",
                     zIndex: 1000,
                     height: "100vh",
+                    overflow: "hidden",
+                    flexShrink: 0,
                 }}
             >
                 <Sidebar />
             </div>
 
             {/* Overlay */}
-            {isMobile &&
-                sidebarOpen && (
-                    <div
-                        onClick={() =>
-                            setSidebarOpen(
-                                false
-                            )
-                        }
-                        style={{
-                            position:
-                                "fixed",
-                            top: 0,
-                            left: 0,
-                            width: "100%",
-                            height: "100%",
-                            background:
-                                "rgba(0,0,0,0.5)",
-                            zIndex: 999,
-                        }}
-                    />
-                )}
+            {isMobile && sidebarOpen && (
+                <div
+                    onClick={() =>
+                        setSidebarOpen(false)
+                    }
+                    style={{
+                        position: "fixed",
+                        inset: 0,
+                        background:
+                            "rgba(0,0,0,0.5)",
+                        zIndex: 999,
+                    }}
+                />
+            )}
 
             {/* Main Content */}
             <main
                 style={{
                     flex: 1,
+                    height: "100vh",
+                    overflowY: "auto",
                     padding: isMobile
                         ? "80px 20px 20px"
                         : "30px",
-                    overflowY: "auto",
+                    boxSizing: "border-box",
                 }}
             >
                 {children}
@@ -131,4 +117,3 @@ export default function MainLayout({
         </div>
     );
 }
-
