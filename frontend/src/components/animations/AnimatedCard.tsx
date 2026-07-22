@@ -1,14 +1,14 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ReactNode } from "react";
+import { ReactNode, CSSProperties } from "react";
 
 interface AnimatedCardProps {
     children: ReactNode;
     delay?: number;
     whileHover?: boolean;
     className?: string;
-    style?: React.CSSProperties;
+    style?: CSSProperties;
 }
 
 export default function AnimatedCard({
@@ -33,7 +33,9 @@ export default function AnimatedCard({
                 whileHover
                     ? {
                           y: -3,
-                          transition: { duration: 0.2 },
+                          transition: {
+                              duration: 0.2,
+                          },
                       }
                     : undefined
             }
