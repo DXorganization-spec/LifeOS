@@ -53,11 +53,14 @@ export default function Sidebar() {
                 color: "white",
                 padding: "25px 20px",
                 boxSizing: "border-box",
-                minHeight: "100vh",
+
+                height: "100%",
+                overflowY: "auto",
+
                 borderRight: "1px solid #374151",
+
                 display: "flex",
                 flexDirection: "column",
-                overflowY: "auto",
             }}
         >
             <h1
