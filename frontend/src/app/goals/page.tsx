@@ -12,6 +12,7 @@ import StaggerItem from "@/components/animations/StaggerItem";
 import api from "@/services/api";
 import toast from "react-hot-toast";
 import ListSkeleton from "@/components/skeletons/ListSkeleton";
+import AnimatedCard from "@/components/animations/AnimatedCard";
 
 interface Area {
     id: string;
@@ -159,15 +160,7 @@ export default function GoalsPage() {
                     <ListSkeleton count={5} />
                 ) : (
                     <>
-                        <motion.div
-                            initial={{ opacity: 0, y: -20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                                duration: 0.6,
-                                ease: "easeOut",
-                                delay: 0.1,
-                            }}
-                        >
+                        <FadeIn delay={0.1}>
                             <h1
                                 style={{
                                     fontSize: "clamp(28px, 6vw, 40px)",
@@ -176,7 +169,7 @@ export default function GoalsPage() {
                             >
                                 🎯 Goals
                             </h1>
-                        </motion.div>
+                        </FadeIn>
 
                         <motion.div
                             initial={{ opacity: 0, y: 15 }}
@@ -269,207 +262,251 @@ export default function GoalsPage() {
                                 Add Goal
                             </motion.button>
                         </motion.div>
-
-                        <AnimatePresence mode="popLayout">
-                            <StaggerContainer>
-                                {goals.map((goal) => (
-                                    <StaggerItem key={goal.id}>
-                                        <motion.div
-                                            initial={{ opacity: 0, y: 20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            exit={{ opacity: 0, y: -20 }}
-                                            transition={{
-                                                duration: 0.4,
-                                                ease: "easeOut",
-                                            }}
-                                            whileHover={
-                                                editingId !== goal.id
-                                                    ? {
-                                                        y: -4,
-                                                        scale: 1.01,
-                                                        boxShadow:
-                                                            "0 10px 30px rgba(34,197,94,0.15)",
-                                                    }
-                                                    : {}
-                                            }
+                        {goals.length === 0 ? (
+                            <FadeIn delay={0.2}>
+                                <AnimatedCard>
+                                    <div
+                                        style={{
+                                            textAlign: "center",
+                                            padding: "60px 20px",
+                                            borderRadius: "16px",
+                                            border: "1px dashed #374151",
+                                            background: "#111827",
+                                        }}
+                                    >
+                                        <div
                                             style={{
-                                                marginBottom: "15px",
-                                                background: "#111827",
-                                                border: "1px solid #374151",
-                                                borderRadius: "14px",
-                                                padding: "20px",
+                                                fontSize: "64px",
+                                                marginBottom: "20px",
                                             }}
                                         >
-                                            {editingId === goal.id ? (
-                                                <motion.div
-                                                    initial={{
-                                                        opacity: 0,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                    }}
-                                                    transition={{
-                                                        duration: 0.3,
-                                                    }}
-                                                >
-                                                    <input
-                                                        value={editTitle}
-                                                        onChange={(e) =>
-                                                            setEditTitle(e.target.value)
+                                            🎯
+                                        </div>
+
+                                        <h2
+                                            style={{
+                                                marginBottom: "12px",
+                                                color: "white",
+                                            }}
+                                        >
+                                            No Goals Yet
+                                        </h2>
+
+                                        <p
+                                            style={{
+                                                color: "#9ca3af",
+                                                maxWidth: "420px",
+                                                margin: "0 auto",
+                                                lineHeight: 1.6,
+                                            }}
+                                        >
+                                            Create your first goal to start tracking your progress and
+                                            build better habits.
+                                        </p>
+                                    </div>
+                                </AnimatedCard>
+                            </FadeIn>
+                        ) : (
+                            <AnimatePresence mode="popLayout">
+                                <StaggerContainer>
+                                    {goals.map((goal) => (
+                                        // KEEP YOUR EXISTING GOAL CARD CODE HERE
+                                        <StaggerItem key={goal.id}>
+                                            <motion.div
+                                                initial={{ opacity: 0, y: 20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                exit={{ opacity: 0, y: -20 }}
+                                                transition={{
+                                                    duration: 0.4,
+                                                    ease: "easeOut",
+                                                }}
+                                                whileHover={
+                                                    editingId !== goal.id
+                                                        ? {
+                                                            y: -4,
+                                                            scale: 1.01,
+                                                            boxShadow:
+                                                                "0 10px 30px rgba(34,197,94,0.15)",
                                                         }
-                                                        style={{
-                                                            width: "100%",
-                                                            padding: "12px",
-                                                            borderRadius: "10px",
-                                                            border: "1px solid #374151",
-                                                            background: "#030712",
-                                                            color: "white",
-                                                            boxSizing: "border-box",
+                                                        : {}
+                                                }
+                                                style={{
+                                                    marginBottom: "15px",
+                                                    background: "#111827",
+                                                    border: "1px solid #374151",
+                                                    borderRadius: "14px",
+                                                    padding: "20px",
+                                                }}
+                                            >
+                                                {editingId === goal.id ? (
+                                                    <motion.div
+                                                        initial={{
+                                                            opacity: 0,
                                                         }}
-                                                    />
-
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            flexWrap: "wrap",
-                                                            gap: "10px",
-                                                            marginTop: "15px",
+                                                        animate={{
+                                                            opacity: 1,
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.3,
                                                         }}
                                                     >
-                                                        <motion.button
-                                                            onClick={() =>
-                                                                updateGoal(goal.id)
+                                                        <input
+                                                            value={editTitle}
+                                                            onChange={(e) =>
+                                                                setEditTitle(e.target.value)
                                                             }
-                                                            whileHover={{
-                                                                scale: 1.05,
-                                                                boxShadow:
-                                                                    "0 6px 15px rgba(34,197,94,0.3)",
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.95,
-                                                            }}
                                                             style={{
-                                                                padding: "10px 20px",
-                                                                border: "none",
+                                                                width: "100%",
+                                                                padding: "12px",
                                                                 borderRadius: "10px",
-                                                                background: "#22c55e",
+                                                                border: "1px solid #374151",
+                                                                background: "#030712",
                                                                 color: "white",
-                                                                cursor: "pointer",
+                                                                boxSizing: "border-box",
                                                             }}
-                                                        >
-                                                            Save
-                                                        </motion.button>
+                                                        />
 
-                                                        <motion.button
-                                                            onClick={() => {
-                                                                setEditingId("");
-                                                                setEditTitle("");
-                                                            }}
-                                                            whileHover={{
-                                                                scale: 1.05,
-                                                                boxShadow:
-                                                                    "0 6px 15px rgba(107,114,128,0.3)",
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.95,
-                                                            }}
+                                                        <div
                                                             style={{
-                                                                padding: "10px 20px",
-                                                                border: "none",
-                                                                borderRadius: "10px",
-                                                                background: "#6b7280",
-                                                                color: "white",
-                                                                cursor: "pointer",
+                                                                display: "flex",
+                                                                flexWrap: "wrap",
+                                                                gap: "10px",
+                                                                marginTop: "15px",
                                                             }}
                                                         >
-                                                            Cancel
-                                                        </motion.button>
-                                                    </div>
-                                                </motion.div>
-                                            ) : (
-                                                <motion.div
-                                                    initial={{
-                                                        opacity: 0,
-                                                    }}
-                                                    animate={{
-                                                        opacity: 1,
-                                                    }}
-                                                    transition={{
-                                                        duration: 0.3,
-                                                    }}
-                                                >
-                                                    <strong
-                                                        style={{
-                                                            fontSize: "18px",
+                                                            <motion.button
+                                                                onClick={() => updateGoal(goal.id)}
+                                                                whileHover={{
+                                                                    scale: 1.05,
+                                                                    boxShadow:
+                                                                        "0 6px 15px rgba(34,197,94,0.3)",
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.95,
+                                                                }}
+                                                                style={{
+                                                                    padding: "10px 20px",
+                                                                    border: "none",
+                                                                    borderRadius: "10px",
+                                                                    background: "#22c55e",
+                                                                    color: "white",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                Save
+                                                            </motion.button>
+
+                                                            <motion.button
+                                                                onClick={() => {
+                                                                    setEditingId("");
+                                                                    setEditTitle("");
+                                                                }}
+                                                                whileHover={{
+                                                                    scale: 1.05,
+                                                                    boxShadow:
+                                                                        "0 6px 15px rgba(107,114,128,0.3)",
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.95,
+                                                                }}
+                                                                style={{
+                                                                    padding: "10px 20px",
+                                                                    border: "none",
+                                                                    borderRadius: "10px",
+                                                                    background: "#6b7280",
+                                                                    color: "white",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                Cancel
+                                                            </motion.button>
+                                                        </div>
+                                                    </motion.div>
+                                                ) : (
+                                                    <motion.div
+                                                        initial={{
+                                                            opacity: 0,
+                                                        }}
+                                                        animate={{
+                                                            opacity: 1,
+                                                        }}
+                                                        transition={{
+                                                            duration: 0.3,
                                                         }}
                                                     >
-                                                        {goal.title}
-                                                    </strong>
-
-                                                    <div
-                                                        style={{
-                                                            display: "flex",
-                                                            flexWrap: "wrap",
-                                                            gap: "10px",
-                                                            marginTop: "15px",
-                                                        }}
-                                                    >
-                                                        <motion.button
-                                                            onClick={() => {
-                                                                setEditingId(goal.id);
-                                                                setEditTitle(goal.title);
-                                                            }}
-                                                            whileHover={{
-                                                                scale: 1.05,
-                                                                boxShadow:
-                                                                    "0 6px 15px rgba(37,99,235,0.3)",
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.95,
-                                                            }}
+                                                        <strong
                                                             style={{
-                                                                padding: "10px 20px",
-                                                                border: "none",
-                                                                borderRadius: "10px",
-                                                                background: "#2563eb",
-                                                                color: "white",
-                                                                cursor: "pointer",
+                                                                fontSize: "18px",
                                                             }}
                                                         >
-                                                            Edit
-                                                        </motion.button>
+                                                            {goal.title}
+                                                        </strong>
 
-                                                        <motion.button
-                                                            onClick={() =>
-                                                                deleteGoal(goal.id)
-                                                            }
-                                                            whileHover={{
-                                                                scale: 1.05,
-                                                                boxShadow:
-                                                                    "0 6px 15px rgba(220,38,38,0.3)",
-                                                            }}
-                                                            whileTap={{
-                                                                scale: 0.95,
-                                                            }}
+                                                        <div
                                                             style={{
-                                                                padding: "10px 20px",
-                                                                border: "none",
-                                                                borderRadius: "10px",
-                                                                background: "#dc2626",
-                                                                color: "white",
-                                                                cursor: "pointer",
+                                                                display: "flex",
+                                                                flexWrap: "wrap",
+                                                                gap: "10px",
+                                                                marginTop: "15px",
                                                             }}
                                                         >
-                                                            Delete
-                                                        </motion.button>
-                                                    </div>
-                                                </motion.div>
-                                            )}
-                                        </motion.div>
-                                    </StaggerItem>
-                                ))}
-                            </StaggerContainer>
-                        </AnimatePresence>
+                                                            <motion.button
+                                                                onClick={() => {
+                                                                    setEditingId(goal.id);
+                                                                    setEditTitle(goal.title);
+                                                                }}
+                                                                whileHover={{
+                                                                    scale: 1.05,
+                                                                    boxShadow:
+                                                                        "0 6px 15px rgba(37,99,235,0.3)",
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.95,
+                                                                }}
+                                                                style={{
+                                                                    padding: "10px 20px",
+                                                                    border: "none",
+                                                                    borderRadius: "10px",
+                                                                    background: "#2563eb",
+                                                                    color: "white",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                Edit
+                                                            </motion.button>
+
+                                                            <motion.button
+                                                                onClick={() =>
+                                                                    deleteGoal(goal.id)
+                                                                }
+                                                                whileHover={{
+                                                                    scale: 1.05,
+                                                                    boxShadow:
+                                                                        "0 6px 15px rgba(220,38,38,0.3)",
+                                                                }}
+                                                                whileTap={{
+                                                                    scale: 0.95,
+                                                                }}
+                                                                style={{
+                                                                    padding: "10px 20px",
+                                                                    border: "none",
+                                                                    borderRadius: "10px",
+                                                                    background: "#dc2626",
+                                                                    color: "white",
+                                                                    cursor: "pointer",
+                                                                }}
+                                                            >
+                                                                Delete
+                                                            </motion.button>
+                                                        </div>
+                                                    </motion.div>
+                                                )}
+                                            </motion.div>
+                                        </StaggerItem>
+                                    ))}
+                                </StaggerContainer>
+                            </AnimatePresence>
+                        )}
                     </>
                 )}
             </div>
