@@ -18,6 +18,8 @@ from app.api.notifications import (
     router as notifications_router
 )
 from app.scheduler import scheduler
+from app.api.habits import router as habits_router
+from app.api.habit_logs import router as habit_logs_router
 
 load_dotenv()
 
@@ -64,6 +66,8 @@ app.include_router(settings_router)
 app.include_router(
     notifications_router
 )
+app.include_router(habits_router)
+app.include_router(habit_logs_router)
 
 
 @app.get("/")
