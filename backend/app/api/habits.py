@@ -11,6 +11,7 @@ from app.models.user import User
 from app.schemas.habit import HabitCreate, HabitUpdate
 
 from app.core.auth import get_current_user
+from app.models.habit_log import HabitLog
 
 router = APIRouter()
 
@@ -127,4 +128,4 @@ def delete_habit(
     db.delete(habit)
     db.commit()
 
-    return {"message": "Habit deleted"}
+    return {"message": "Habit deleted successfully"}
