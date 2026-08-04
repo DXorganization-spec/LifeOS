@@ -13,6 +13,7 @@ const menuItems = [
     { name: "Achievements", href: "/achievements", icon: "🏆" },
     { name: "Analytics", href: "/analytics", icon: "📊" },
     { name: "Heatmap", href: "/heatmap", icon: "🔥" },
+    { name: "Habits", href: "/habits", icon: "💪" },
 ];
 
 export default function Sidebar() {
