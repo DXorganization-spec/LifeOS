@@ -3,22 +3,18 @@
 import { useEffect, useState } from "react";
 import { toast } from "react-hot-toast";
 
-import {
-    Habit,
-    getHabits,
-} from "@/services/habitService";
+import { getHabits } from "@/services/habitService";
+import type { Habit } from "@/services/habitService";
 
 import HabitForm from "@/components/habits/HabitForm";
 import HabitCard from "@/components/habits/HabitCard";
 import HabitSkeleton from "@/components/skeletons/HabitSkeleton";
 
-import {
-    PageTransition,
-    FadeIn,
-    AnimatedCard,
-    StaggerContainer,
-    StaggerItem,
-} from "@/components/animations";
+import PageTransition from "@/components/animations/PageTransition";
+import FadeIn from "@/components/animations/FadeIn";
+import AnimatedCard from "@/components/animations/AnimatedCard";
+import StaggerContainer from "@/components/animations/StaggerContainer";
+import StaggerItem from "@/components/animations/StaggerItem";
 
 export default function HabitsPage() {
     const [habits, setHabits] = useState<Habit[]>([]);
