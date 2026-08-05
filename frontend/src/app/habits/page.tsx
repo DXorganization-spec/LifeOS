@@ -73,6 +73,8 @@ export default function HabitsPage() {
 
                         <HabitForm
                             onHabitCreated={refreshHabits}
+                            editingHabit={editingHabit}
+                            clearEditing={() => setEditingHabit(null)}
                         />
 
                         {loading ? (
@@ -96,17 +98,17 @@ export default function HabitsPage() {
                         ) : (
                             <StaggerContainer>
                                 {habits.map((habit) => (
-    <StaggerItem key={habit.id}>
-        <HabitCard
-            habit={habit}
-            completed={completedToday.includes(habit.id)}
-            onRefresh={refreshHabits}
-            onEdit={setEditingHabit}
-        />
-    </StaggerItem>
-))}
-</StaggerContainer>
-)}
+                                    <StaggerItem key={habit.id}>
+                                        <HabitCard
+                                            habit={habit}
+                                            completed={completedToday.includes(habit.id)}
+                                            onRefresh={refreshHabits}
+                                            onEdit={setEditingHabit}
+                                        />
+                                    </StaggerItem>
+                                ))}
+                            </StaggerContainer>
+                        )}
                     </div>
                 </AnimatedCard>
             </FadeIn>
