@@ -7,6 +7,8 @@ import toast from "react-hot-toast";
 import api from "@/services/api";
 import {
     createHabit,
+    updateHabit,
+    type Habit,
     type HabitCreate,
 } from "@/services/habitService";
 
@@ -17,10 +19,14 @@ interface Goal {
 
 interface HabitFormProps {
     onHabitCreated: () => void;
+    editingHabit: Habit | null;
+    clearEditing: () => void;
 }
 
 export default function HabitForm({
     onHabitCreated,
+    editingHabit,
+    clearEditing,
 }: HabitFormProps) {
     const [title, setTitle] = useState("");
     const [description, setDescription] = useState("");
@@ -40,6 +46,17 @@ export default function HabitForm({
     useEffect(() => {
         fetchGoals();
     }, []);
+
+    useEffect(() => {
+        console.log("editingHabit =", editingHabit);
+
+        if (!editingHabit) return;
+
+        setTitle(editingHabit.title);
+        setDescription(editingHabit.description ?? "");
+        setFrequency(editingHabit.frequency);
+        setGoalId(editingHabit.goal_id);
+    }, [editingHabit]);
 
     const fetchGoals = async () => {
         try {
@@ -77,7 +94,19 @@ export default function HabitForm({
                 goal_id: goalId,
             };
 
-            await createHabit(habitData);
+            if (editingHabit) {
+                await updateHabit(editingHabit.id, {
+                    title: habitData.title,
+                    description: habitData.description,
+                    frequency: habitData.frequency,
+                });
+
+                toast.success("Habit updated successfully!");
+                clearEditing();
+            } else {
+                await createHabit(habitData);
+                toast.success("Habit created successfully!");
+            }
 
             setTitle("");
             setDescription("");
@@ -88,11 +117,13 @@ export default function HabitForm({
             }
 
             onHabitCreated();
-
-            toast.success("Habit created successfully!");
         } catch (error) {
             console.error(error);
-            toast.error("Failed to create habit.");
+            toast.error(
+                editingHabit
+                    ? "Failed to update habit."
+                    : "Failed to create habit."
+            );
         } finally {
             setLoading(false);
         }
@@ -219,8 +250,12 @@ export default function HabitForm({
                 }}
             >
                 {loading
-                    ? "Creating..."
-                    : "Add Habit"}
+                    ? editingHabit
+                        ? "Updating..."
+                        : "Creating..."
+                    : editingHabit
+                        ? "Update Habit"
+                        : "Add Habit"}
             </motion.button>
         </motion.div>
     );
